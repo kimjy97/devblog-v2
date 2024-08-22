@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# contentlayer
+.contentlayer
+DELETED/*
+
+gen-lang-client-0843211218-91c896be87cc.json

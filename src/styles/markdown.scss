@@ -1,0 +1,344 @@
+html[data-theme="light"] {
+  --color-border-muted: #d8dee4;
+  --color-blockquote: #787884;
+  --color-blockquote-bar: #bbbbc8;
+  --color-tag: #e2e2ef;
+  --color-tag-hover: #dadaee;
+  --color-link: #7080fb;
+  --color-lightblue: rgb(24, 24, 174);
+}
+
+html[data-theme="dark"] {
+  --color-border-muted: #333841;
+  --color-blockquote: #acacb9;
+  --color-blockquote-bar: #494950;
+  --color-tag: #2f2f3d;
+  --color-tag-hover: #393949;
+  --color-link: #469aee;
+  --color-lightblue: rgb(202, 202, 255);
+}
+
+.chat-assistant {
+  font-size: 1rem;
+  font-weight: 450;
+  line-height: 1rem;
+
+  p {
+    margin-top: -0.25rem;
+    margin-bottom: -0.25rem;
+    line-height: 1.75rem;
+  }
+  strong {
+    font-weight: 650;
+  }
+  em {
+    font-style: italic;
+  }
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.8rem;
+  }
+  h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.7rem;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.7rem;
+  }
+  ul,
+  ol {
+    margin: 0 0 0 1.5rem;
+    list-style: initial;
+  }
+  ul {
+    margin-top: -1rem;
+    margin-bottom: 0rem;
+  }
+  ol {
+    & > li {
+      & > *:first-child {
+        margin-top: -1.625rem;
+      }
+    }
+    //margin-bottom: -1rem;
+  }
+  li {
+    line-height: 1.75rem;
+  }
+  blockquote p {
+    position: relative;
+    padding-left: 2rem;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+
+      background-color: rgba(152, 150, 169, 0.4);
+    }
+  }
+  hr {
+    background-color: var(--text-normal);
+    opacity: 0.1;
+  }
+  // force style... //
+  pre {
+    min-width: 35vw;
+    padding: 1.25em 0 2.25em 0 !important;
+    margin: 0 !important;
+
+    background-color: transparent !important;
+
+    &:has(.singlePre) {
+      padding: 1.25rem 0 !important;
+    }
+  }
+  &.singlePre {
+    background-color: #533030aa;
+    border-radius: 8px;
+    padding: 0.3125rem 0.5rem;
+    margin-right: 0.25rem;
+    line-height: 1.5625rem;
+
+    font-size: 0.8125rem;
+    font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono",
+      "Courier New", monospace;
+    color: #fff;
+  }
+
+  // 기본 스타일
+  table {
+    border-spacing: 0;
+    border-collapse: separate;
+    border: 1px solid var(--bg-chat-table-border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  th,
+  td {
+    padding: 0.625rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--bg-chat-table-border);
+  }
+
+  tr:last-child td {
+    border-bottom: 1px solid transparent;
+  }
+
+  th {
+    background-color: var(--bg-chat-table-header);
+
+    font-weight: bold;
+  }
+
+  tr {
+    background-color: var(--bg-chat-table);
+  }
+
+  tr:hover {
+    background-color: var(--bg-chat-table-hover);
+  }
+
+  @media (max-width: 768px) {
+    th,
+    td {
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.post-markdown {
+  line-height: 2em;
+  font-weight: 500;
+  font-size: 1.125em;
+
+  * {
+    transition: color 150ms;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+  }
+
+  h1 {
+    color: var(--color-lightblue);
+    font-size: 2.375rem;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    @media (max-width: 768px) {
+      font-size: 2.125em;
+      padding-top: 0em;
+      padding-bottom: 0.625em;
+      margin-bottom: 0.75em;
+    }
+  }
+  h2 {
+    font-size: 1.75rem;
+    padding-top: 1rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    @media (max-width: 768px) {
+      font-size: 1.625em;
+      padding-top: 0em;
+      padding-bottom: 0.625em;
+      margin-bottom: 0.75em;
+    }
+  }
+  h3 {
+    font-size: 1.75em;
+  }
+  h4 {
+    font-size: 1.5em;
+  }
+  h5 {
+    font-size: 1.25em;
+  }
+  h6 {
+    font-size: 1em;
+  }
+
+  p {
+    margin-bottom: 1em;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  strong {
+    font-weight: 800;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul,
+  ol {
+    margin-bottom: 1em;
+    padding-left: 2em;
+  }
+
+  blockquote {
+    margin: 2em 0;
+    padding-left: 1em;
+    border-left: 5px solid var(--color-blockquote-bar);
+    color: var(--color-blockquote);
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 2em 0;
+  }
+
+  iframe {
+    margin: 1em 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1em 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+    }
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+  }
+
+  .singlePre {
+    background-color: #533030aa;
+    border-radius: 8px;
+    padding: 0.3125em 0.5em;
+    margin-right: 0.125em;
+    line-height: 1.5625em;
+
+    font-size: 0.8125em;
+    font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono",
+      "Courier New", monospace;
+    color: #fff;
+  }
+
+  code {
+    & > span {
+      font-size: 1.125em !important;
+    }
+  }
+}
+
+.code-style {
+  p {
+    margin-bottom: 0;
+  }
+  pre {
+    min-width: 35vw;
+    padding: 0.25rem 0 1.75rem 0 !important;
+    margin: 0 !important;
+
+    background-color: transparent !important;
+
+    &:has(.singlePre) {
+      padding: 1.25rem 0 !important;
+    }
+  }
+  code {
+    & > span {
+      filter: saturate(1.2);
+    }
+    & > span {
+      display: block;
+      padding: 0em 1.75em;
+
+      font-size: 1.125em;
+      font-weight: 500 !important;
+      line-height: 1.5em;
+      white-space: pre-wrap;
+      word-break: break-all;
+      cursor: text;
+
+      &:hover {
+        background-color: rgba(220, 220, 255, 0.025) !important;
+      }
+    }
+    ::selection {
+      background-color: rgba(241, 91, 241, 0.219);
+    }
+  }
+}
