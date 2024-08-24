@@ -25,8 +25,8 @@ const Container = styled.div`
   margin-bottom: 3.375rem;
 
   @media (max-width: 768px) {
-    gap: 1rem;
-    padding-top: 2.25rem;
+    gap: 0.75rem;
+    padding-top: 1.25rem;
     margin-bottom: 2.25rem;
   }
 `
@@ -38,7 +38,7 @@ const Title = styled.h1`
   transition: 150ms;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 `
 const SubTitle = styled.h3`
@@ -55,7 +55,7 @@ const SubTitle = styled.h3`
   } 
 
   @media (max-width: 768px) {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 `
 

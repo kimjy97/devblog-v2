@@ -2,24 +2,19 @@
 
 import styled from "styled-components";
 import IconWarning from "@public/svgs/warning1.svg";
-import useSidebar from "@/hooks/useSidebar";
-import { useStaticHeader } from "@/hooks/useHeader";
 import { useLayout } from "@/hooks/useLayout";
-import { useLayoutEffect } from "react";
 import { Pretendard } from "@public/fonts";
 import { useRecoilValue } from "recoil";
 import { blacklistReasonState } from "@/atoms/blocked";
 
 const NotFound = () => {
   const blacklistReason = useRecoilValue(blacklistReasonState);
-  const { setFixedButtonConfig, setOverflow } = useLayout();
-  useSidebar(false);
-  useStaticHeader(true);
-
-  useLayoutEffect(() => {
-    setFixedButtonConfig({ display: 'none' });
-    setOverflow('hidden');
-  }, [])
+  useLayout({
+    isSidebar: false,
+    isStaticHeader: true,
+    fixedButton: { display: 'none' },
+    overflow: 'hidden',
+  });
 
   return (
     <Container className={Pretendard.className}>

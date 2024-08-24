@@ -157,24 +157,13 @@ export const useResponseChat = () => {
       });
       const result = await chat.sendMessageStream(requestPromptbody);
 
-      const delay = (ms: number) => {
-        return new Promise<void>((resolve) => {
-          setTimeout(() => {
-            resolve();
-          }, ms);
-        });
-      };
-
       for await (const chunk of result.stream) {
         if (stopStreamRef.current) {
           break;
         }
-
         const msgToken = chunk.text();
         const msgSlice = Math.floor(msgToken.length / msgSliceNum) > 0 ? Math.floor(msgToken.length / msgSliceNum) : 1;
         token = chunk.usageMetadata?.candidatesTokenCount ?? 0;
-
-        const promises = []; // Promise를 저장할 배열
 
         for (let i = 0; i < msgToken.length; i += msgSlice) {
           if (stopStreamRef.current) {
@@ -184,13 +173,9 @@ export const useResponseChat = () => {
           const char = msgToken.slice(i, i + msgSlice);
           ct += char;
           handleNewChatArr(arr, ct, false);
-
-          // delay 함수를 사용하여 비동기 지연 추가
-          promises.push(delay(1));
+          // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
+          await new Promise(resolve => setTimeout(resolve, 1));
         }
-
-        // 모든 Promise가 완료될 때까지 기다림
-        await Promise.all(promises);
       }
 
       if (!stopStreamRef.current) {

@@ -51,7 +51,7 @@ const Container = styled.div`
   
   @media (max-width: 1280px) {
     width: 460px;
-    position: absolute;
+    position: fixed;
     padding-top: 68px;
 
     transform: translateX(-100%);

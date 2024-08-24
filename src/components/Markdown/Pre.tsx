@@ -35,14 +35,14 @@ export default Pre;
 const Container = styled.div`
     margin: 2em 0 !important;
     background-color: rgb(8, 8, 12) !important;
-    border-radius: 18px;
+    border-radius: 1em;
 `;
 
 const LanguageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.125rem 1.25rem;
+  padding: 1em 1.25em;
   user-select: none;
 
   & p {

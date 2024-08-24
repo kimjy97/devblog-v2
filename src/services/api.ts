@@ -24,7 +24,6 @@ export const blacklistThrowError = (reason: string) => {
 export const apiGet = async (url: string, conf?: AxiosRequestConfig) => {
   const result = await axios.get(url, {
     ...conf,
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
   })
     .then((res: any) => {
       if (res.headers.get('x-is-blacklisted') === 'true') {

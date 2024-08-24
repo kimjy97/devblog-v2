@@ -6,6 +6,11 @@ export const fixedButtonConfigState = atom<CSSProperties | undefined>({
   default: undefined,
 });
 
+export const isFullPlageState = atom<boolean>({
+  key: 'isFullPlageState',
+  default: false,
+});
+
 export const overlayState = atom<boolean>({
   key: 'overlayState',
   default: false,

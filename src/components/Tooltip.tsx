@@ -44,6 +44,7 @@ const TooltipWrapper = styled.div`
   border-radius: 8px;
   background-color: var(--bg-tooltip);
   backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
   
   pointer-events: none;
   transition: 100ms;

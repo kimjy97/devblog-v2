@@ -7,10 +7,9 @@ import PostFavorite from '@/containers/PostMarkDown/PostFavorite';
 import PostTags from '@/containers/PostMarkDown/PostTags';
 import PostTitle from '@/containers/PostMarkDown/PostTitle';
 import { useLayout } from '@/hooks/useLayout';
-import useSidebar from '@/hooks/useSidebar';
 import { apiGet } from '@/services/api';
 import { Pretendard } from '@public/fonts';
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect, } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -20,8 +19,7 @@ interface IProps {
 
 const PostPage = ({ params }: IProps): JSX.Element => {
   const [, setPostInfo] = useRecoilState(postInfoState);
-  const { setFixedButtonConfig, setOverflow } = useLayout();
-  useSidebar(true);
+  useLayout();
 
   const getPostInfo = async () => {
     const result = await apiGet('/api/blog/post', {
@@ -35,12 +33,6 @@ const PostPage = ({ params }: IProps): JSX.Element => {
     setPostInfo(undefined);
     setTimeout(() => getPostInfo(), 0);
   }, [params])
-
-
-  useLayoutEffect(() => {
-    setFixedButtonConfig({ display: 'flex' });
-    setOverflow('visible');
-  }, [])
 
   return (
     <Container className={Pretendard.className}>

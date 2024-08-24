@@ -79,8 +79,8 @@ const Wrapper = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 
   overflow: auto;
 

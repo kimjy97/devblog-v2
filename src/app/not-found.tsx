@@ -3,20 +3,15 @@
 import styled from "styled-components";
 import { Pretendard } from "../../public/fonts";
 import IconWarning from "@public/svgs/warning1.svg";
-import useSidebar from "@/hooks/useSidebar";
-import { useStaticHeader } from "@/hooks/useHeader";
 import { useLayout } from "@/hooks/useLayout";
-import { useLayoutEffect } from "react";
 
 const NotFound = () => {
-  const { setFixedButtonConfig, setOverflow } = useLayout();
-  useSidebar(false);
-  useStaticHeader(true);
-
-  useLayoutEffect(() => {
-    setFixedButtonConfig({ display: 'none' });
-    setOverflow('hidden');
-  }, [])
+  useLayout({
+    fixedButton: { display: 'none' },
+    overflow: 'hidden',
+    isSidebar: false,
+    isStaticHeader: true,
+  });
 
   return (
     <Container className={Pretendard.className}>

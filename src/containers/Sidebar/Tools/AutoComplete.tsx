@@ -96,6 +96,7 @@ const SuggestionsList = styled.ul`
   background-color: var(--bg-search-autocomplete);
   border: 1px solid var(--bg-search-autocomplete-border);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--bg-search-autocomplete-boxshadow);
   border-radius: 12px;
   transform: translateY(10px);

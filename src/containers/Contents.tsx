@@ -1,5 +1,7 @@
 'use client'
 
+import { isFullPlageState } from '@/atoms/layout';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 interface IProps {
@@ -7,20 +9,28 @@ interface IProps {
 }
 
 const Contents = ({ children }: IProps): JSX.Element => {
+  const isFullPage = useRecoilValue(isFullPlageState);
+
   return (
-    <Container>
+    <Container className={isFullPage ? 'fullPage' : ''}>
       {children}
     </Container>
   )
 };
-export default Contents;
 
+export default Contents;
 
 const Container = styled.div`
   position: relative;
   display: flex;
-  min-height: 100vh;
-  background: var(--bg-body);
-
+  width: 100%;
+  min-height: 100%;
+  
   transition: background-color 150ms;
+
+  &.fullPage {
+    position: fixed;
+    height: 100%;
+    overflow: hidden;
+  }
 `

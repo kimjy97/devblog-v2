@@ -104,20 +104,20 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding-top: 5rem;
-  padding-bottom: 10rem;
+  padding-top: 5em;
+  padding-bottom: 10em;
 `;
 const ButtonWrapper = styled.button`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: left;
-  width: 20.125rem;
-  height: 4.5rem;
-  padding-left: 2rem;
+  width: 20.125em;
+  height: 4.5em;
+  padding-left: 2em;
 
   background-color: var(--bg-favorite);
-  border-radius: 48px;
+  border-radius: 3em;
   overflow: hidden;
   border: none;
 
@@ -126,9 +126,9 @@ const ButtonWrapper = styled.button`
   user-select: none;
 
   svg {
-    width: 2.25rem;
-    height: 2.25rem;
-    margin-top: 0.25rem;
+    width: 2.25em;
+    height: 2.25em;
+    margin-top: 0.25em;
 
     fill: #46464b;
 
@@ -144,13 +144,13 @@ const ButtonWrapper = styled.button`
 
   &.unVisible {
     justify-content: center;
-    width: 4.5rem;
+    width: 4.5em;
     padding: 0;
     border-radius: 100%;
   }
 
   &.active {
-    width: 12.875rem;
+    width: 12.875em;
     box-shadow: var(--bg-favorite-shadow-active);
 
     svg {
@@ -176,19 +176,19 @@ const Icon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -4px;
+  margin-top: -0.25em;
 `
 const Note = styled.div`
   position: absolute;
-  left: 86px;
+  left: 5.375em;
 
   color: var(--text-normal);
-  font-size: 1rem;
+  font-size: 1em;
   white-space: nowrap;
 `
 const Light = styled.div`
   position: absolute;
-  width: 16px;
+  width: 1em;
   height: 100%;
   transform: translateX(-600px);
 

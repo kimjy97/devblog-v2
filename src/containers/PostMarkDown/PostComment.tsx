@@ -66,16 +66,20 @@ const CommentLabel = styled.div`
   transition: 150ms;
 `
 const Label = styled.p`
-  margin-right: 0.75rem;
+  margin-right: 0.5em;
   color: var(--text-normal);
-  font-size: 1.5rem;
+  font-size: 1.5em;
   font-weight: 700;
 
   transition: 150ms;
+
+  @media (max-width: 768px) {
+    margin-right: 0.5em;
+  }
 `
 const CommentNum = styled.p`
   color: var(--text-sub-light);
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 500;
 `
 const NoList = styled.div`

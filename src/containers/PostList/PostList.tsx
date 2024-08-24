@@ -106,7 +106,7 @@ const PostList = (): JSX.Element => {
         <MobileTagList />
         {filteredData ? filteredData.length > 0 ?
           <PostListWrapper>
-            {filteredData.slice(0, 6).map((i: PostInfo, idx: number) =>
+            {filteredData.map((i: PostInfo, idx: number) =>
               <Post data={i} key={idx} />
             )}
           </PostListWrapper> :
@@ -116,7 +116,7 @@ const PostList = (): JSX.Element => {
           </NoList>
           :
           <PlaceholderPostListWrapper>
-            {Array.from({ length: 6 }).map((i: any, idx: number) => (
+            {Array.from({ length: 12 }).map((i: any, idx: number) => (
               <PlaceholderPost key={idx}>
                 <div /><div /><div /><div /><div /><div />
               </PlaceholderPost>
@@ -141,19 +141,15 @@ const PostListContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 200px;
+  padding-bottom: 12.5rem;
   
-  //background-color: var(--bg-postlist);
-  //box-shadow: var(--bg-pitem-boxshadow);
-  //border-radius: 16px;
-
   transition: background-color 150ms;
 `
 const PostListWrapper = styled.ul`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  column-gap: 1.25rem;
   row-gap: 1.5rem;
 
   opacity: 0;
@@ -165,9 +161,9 @@ const PostListWrapper = styled.ul`
   }
 
   @media (max-width: 768px) {
-    row-gap: 1rem;
+    row-gap: 1.125rem;
     column-gap: 1rem;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
   }
 
   @keyframes fadeInAni {
@@ -180,7 +176,7 @@ const PlaceholderPostListWrapper = styled.ul`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  column-gap: 1.25rem;
   row-gap: 1.5rem;
 
   opacity: 0;
@@ -196,10 +192,11 @@ const PlaceholderPostListWrapper = styled.ul`
   @media (max-width: 1454px) {
     width: 100%;
   }
+
   @media (max-width: 767px) {
-    row-gap: 1rem;
+    row-gap: 1.125rem;
     column-gap: 1rem;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
   }
 `
 const OptionWrapper = styled.div`
@@ -223,7 +220,7 @@ const OptionWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: calc(100% - 2rem);
+    width: calc(100% - 1.5rem);
     gap: 1rem;
     padding-bottom: 0.75rem;
     margin-bottom: 1rem;

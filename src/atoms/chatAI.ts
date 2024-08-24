@@ -4,7 +4,7 @@ import { atom } from "recoil";
 
 export const currentChatIdState = atom<number>({
   key: 'currentChatIdState',
-  default: 0,
+  default: -1,
 });
 
 export const requestPromptState = atom<any>({

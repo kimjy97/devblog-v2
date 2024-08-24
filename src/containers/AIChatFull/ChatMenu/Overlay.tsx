@@ -22,7 +22,7 @@ const Overlay = (): JSX.Element => {
 export default Overlay;
 
 const Container = styled.div`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   left: 0;

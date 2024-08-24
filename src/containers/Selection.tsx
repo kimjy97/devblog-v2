@@ -136,6 +136,7 @@ const Wrapper = styled.div`
   box-sizing: initial;
   overflow: hidden;
   backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   margin-top: -0.0625rem;
 
   transition: 150ms, height 300ms cubic-bezier(.04,.97,.08,1), width 300ms;

@@ -79,6 +79,11 @@ const InputPrompt = (): JSX.Element => {
   };
 
   const handleEnterInput = (e: any) => {
+    // 브라우저 너비가 768px 이하일 경우 함수를 즉시 종료
+    if (window.innerWidth <= 768) {
+      return;
+    }
+
     const trimPrompt = chatInput.trim();
 
     if (e.nativeEvent.isComposing) {
@@ -262,7 +267,6 @@ const NoteFadeInAni = keyframes`
   }
 `
 const Container = styled.div`
-  
 `
 const Wrapper = styled.div<{ $isTyping: boolean, $isPulsing: boolean }>`
   position: relative;
@@ -270,7 +274,7 @@ const Wrapper = styled.div<{ $isTyping: boolean, $isPulsing: boolean }>`
   align-items: flex-end;
   gap: 8px;
   padding-bottom: 30px;
-  width: calc(100% - 32px);
+  width: calc(100% - 2rem);
   max-width: ${contentsWidth};
   min-width: 900px;
   margin: 0 auto;
@@ -292,12 +296,16 @@ const Wrapper = styled.div<{ $isTyping: boolean, $isPulsing: boolean }>`
   }
 
   @media (max-width: 1280px) {
-    width: calc(100% - 32px);
+    width: calc(100% - 2rem);
     max-width: 100%;
     min-width: auto;
     #aiIcon {
       display: none;
     }
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% - 1rem);
   }
 `
 const InputWrapper = styled.div`
@@ -477,6 +485,7 @@ const Note = styled.div`
   
   color: var(--text-normal);
   font-size: 0.75rem;
+  font-weight: 400;
   text-align: center;
   
   transform: translateX(-50%);
@@ -489,6 +498,10 @@ const Note = styled.div`
 
   &.visible {
     animation: ${NoteFadeInAni} 250ms 380ms ease-out forwards;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 11px;
   }
 `
 const Loader = styled.div`

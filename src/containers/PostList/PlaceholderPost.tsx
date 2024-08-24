@@ -24,8 +24,10 @@ const Container = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+  column-gap: 1.25rem;
+  row-gap: 1.5rem;
   padding: 0 0.5rem;
+  padding-bottom: 3rem;
 
   opacity: 0;
 
@@ -40,9 +42,12 @@ const Container = styled.div`
   @media (max-width: 1454px) {
     width: 100%;
   }
+
   @media (max-width: 768px) {
-    row-gap: 26px;
-    column-gap: 20px;
+    row-gap: 1.125rem;
+    column-gap: 1rem;
+    padding: 0;
+    padding-bottom: 3rem;
   }
 `
 const Placeholder = styled.div`

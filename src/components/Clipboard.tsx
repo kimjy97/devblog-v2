@@ -29,14 +29,14 @@ const Clipboard = ({ text }: IProps): JSX.Element => {
         play={isCopy}
         speed={1.2}
         onComplete={() => { setIsCopy(false) }}
-        boxStyle={{ width: 16, height: 16, marginTop: -6, marginLeft: 1 }}
+        boxStyle={{ width: 16, height: 16, marginTop: 0, marginLeft: 1 }}
         style={{ width: 20, height: 20 }}
       />
     </Container>
   )
 };
-export default Clipboard;
 
+export default Clipboard;
 
 const Container = styled.div`
   position: relative;

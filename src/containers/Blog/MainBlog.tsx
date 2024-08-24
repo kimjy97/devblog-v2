@@ -57,7 +57,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 32px;
   align-items: flex-start;
-  padding: 0 16px;  
+  padding: 0 1rem;  
   padding-top: var(--sidebar-top);
   padding-bottom: 200px;
 
@@ -74,8 +74,8 @@ const Container = styled.div`
   }
 
   @media (max-width: 1023px) {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
     gap: 3rem;
   }
 

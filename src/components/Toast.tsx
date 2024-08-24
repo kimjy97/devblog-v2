@@ -132,23 +132,34 @@ const Container = styled.div`
 const ToastMessage = styled.div<{ delay: string }>`
   display: flex;
   align-items: center;
-  padding: 0.875rem 1.5rem;
-  padding-left: 1.375rem;
-  gap: 1rem;
+  padding: 0.875em 1.5em;
+  padding-left: 1.375em;
+  gap: 1em;
   
   background-color: #0009;
-  border-radius: 8px;
+  border-radius: 0.5em;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 
   color: #fff;
-  font-size: 1.125rem;
+  font-size: 1.125em;
 
   transform-origin: center 0px;
 
   animation: ${fadeIn} 400ms forwards cubic-bezier(0.23, 1, 0.320, 1),
              ${({ delay }) => css`${fadeOut} 200ms ${delay}ms forwards ease-in,
              ${slideDown} 200ms ${delay}ms forwards ease-in`};
+
+  @media (max-width: 768px) {
+    padding: 0.7em 1.3em;
+    padding-left: 1.1em;
+    gap: 0.875em;
+
+    border-radius: 0.4em;
+
+    font-size: 0.875em;
+  }
 `;
 
 export default Toast;

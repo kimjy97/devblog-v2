@@ -2,7 +2,6 @@
 
 import { useLayout } from '@/hooks/useLayout';
 import { Pretendard } from '@public/fonts';
-import { useLayoutEffect } from 'react';
 import styled from 'styled-components';
 
 interface IProps {
@@ -10,13 +9,10 @@ interface IProps {
 };
 
 const PageContainer = ({ children }: IProps): JSX.Element => {
-  const { setFixedButtonConfig, setOverflow, setIsSidebar } = useLayout();
-
-  useLayoutEffect(() => {
-    setIsSidebar(false);
-    setFixedButtonConfig({ display: 'none' });
-    setOverflow('visible');
-  }, [])
+  useLayout({
+    isSidebar: false,
+    fixedButton: { display: 'none' },
+  });
 
   return (
     <Container className={Pretendard.className}>

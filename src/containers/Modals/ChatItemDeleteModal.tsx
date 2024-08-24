@@ -75,7 +75,7 @@ const ChatItemDeleteModal = (): JSX.Element => {
       </ModalContents>
       <Buttons
         handleClose={handleClose}
-        handleRename={handleDelete}
+        handleDelete={handleDelete}
       />
     </ModalTemplate>
   )

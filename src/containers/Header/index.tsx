@@ -30,6 +30,7 @@ const Header = () => {
   const pathname = usePathname();
   const visible = useHeader();
   const containerClass = isStaticHeader ? 'static' : visible ? 'fixed' : '';
+  const sidebarClass = isAIChatMenuToggle ? 'off' : '';
 
   const handleClickHamburger = () => {
     switch (pathname) {
@@ -72,7 +73,7 @@ const Header = () => {
   }, [pathname]);
 
   return pathname !== '/guard' ? (
-    <Container className={containerClass} ref={headerRef}>
+    <Container className={`${containerClass} ${sidebarClass}`} ref={headerRef}>
       <Wrapper className={AvantGarde.className}>
         <Side id='logoWrapper'>
           <Link href={url} replace>
@@ -140,6 +141,7 @@ const Container = styled.header`
     top: calc(-1 * var(--header-height));
     width: calc(100% - 10px);
     height: calc(var(--header-height) + 0.5rem);
+    padding-left: 0.5rem;
 
     box-shadow: var(--bg-header-boxshadow);
     background: var(--bg-header1);
@@ -154,6 +156,15 @@ const Container = styled.header`
 
   &.static {
     position: fixed !important;
+
+    &>div:nth-child(2) {
+      -webkit-backdrop-filter: blur(40px);
+      backdrop-filter: blur(40px);
+    }
+  }
+
+  &.off {
+    z-index: -1;
   }
   
   &>div:nth-child(2) {
@@ -161,18 +172,29 @@ const Container = styled.header`
   }
 
   @media (max-width: 1280px) {
-    height: calc(var(--header-height) + 0.5rem);
+    width: 100%;
+    left: 0px;
+
     &.fixed {
       width: 100%;
+      height: calc(var(--header-height) + 0rem);
       right: auto;
-      left: 0px;
-      padding-left: 10px;
+    }
+    &.static {
+      height: calc(var(--header-height) + 0rem);
     }
     &>div:nth-child(1) {
       display: none;
     }
     &>div:nth-child(2) {
       display: flex;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &.static {
+      width: 100%;
+      left: 0;
     }
   }
 `
@@ -183,7 +205,7 @@ const Wrapper = styled.div`
   width: 100%;
   max-width: 100%;
   height: 100%;
-  padding: 0 16px;
+  padding: 0 1rem;
 
   box-sizing: border-box;
 
@@ -255,6 +277,15 @@ const Logo = styled.div`
   }
 
   @media (max-width: 768px) {
+    &>p {
+      font-weight: 800;
+      font-size: 1.1875rem;
+    }
+
+    &>#logo {
+      height: 34%;
+    }
+
     &:hover {
       margin-left: 0px;
     }
@@ -276,6 +307,7 @@ const Hamburger = styled.div`
   display: flex;
   align-items: center;
   padding: 16px;
+  margin-left: 6px;
 
   opacity: 0.4;
   cursor: pointer;

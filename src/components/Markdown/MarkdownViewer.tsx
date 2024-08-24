@@ -11,7 +11,7 @@ const MarkdownViewer = ({ text }: Props) => {
   return (
     <Markdown
       remarkPlugins={[remarkGfm]}
-      className='prose prose-sm prose-slate w-full  max-w-full md:prose-base lg:prose-lg chat-assistant code-style'
+      className='chat-assistant code-style'
       components={{
         pre: Pre,
         code: Code,

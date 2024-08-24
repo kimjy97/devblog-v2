@@ -20,21 +20,26 @@ const ChatContents = (): JSX.Element => {
   const [messageHeight, setMessgaeHeight] = useState<number>(0);
   const scroll = useScrollIsMax(wrapperRef.current);
   const arr: any[] | undefined = chatArr.find((i: IChatArray) => i.chatId === currentChatId)?.chatContents;
+  const isExistArr = !!(arr && arr.length > 0);
   useResponseChat();
 
   useEffect(() => {
-    if (scroll.isMax || scroll.gap < 12) {
+    if (isExistArr && (scroll.isMax || scroll.gap < 12)) {
       setMessgaeHeight(messageListRef.current.offsetHeight);
       messageListRef.current.scrollIntoView({ block: "end" });
     }
   }, [chatArr]);
 
   useEffect(() => {
-    messageListRef.current.scrollIntoView({ block: "end" });
+    if (isExistArr && arr.length > 0) {
+      messageListRef.current.scrollIntoView({ block: "end" });
+    } else {
+      messageListRef.current.scrollIntoView({ block: "start" });
+    }
   }, [messageHeight, currentChatId]);
 
   useEffect(() => {
-    if (scroll.isMax) {
+    if (isExistArr && scroll.isMax) {
       messageListRef.current.scrollIntoView({ block: "end" });
     }
   }, [chatInput])
@@ -60,9 +65,14 @@ const Container = styled.div`
   position: relative;
   flex: 1;
   top: calc(var(--header-height) + 1rem);
-  height: calc(100vh - var(--header-height) - 1rem);
+  height: calc(100svh - var(--header-height) - 1rem);
 
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    top: 0;
+    height: 100svh;
+  }
 `
 const Wrapper = styled.div`
   flex: 1;
@@ -99,9 +109,9 @@ const MessageList = styled.div`
   flex-direction: column;
   margin: 0 auto;
   gap: 0px;
-  width: calc(100% - 32px);
+  width: calc(100% - 2rem);
   min-height: 100%;
-  max-width: calc(${contentsWidth} - 140px);
+  max-width: calc(${contentsWidth} - 8.75rem);
   min-width: 760px;
   padding-top: 40px;
   padding-bottom: 24px;
@@ -120,8 +130,13 @@ const MessageList = styled.div`
   @media (max-width: 1280px) {
     max-width: 100%;
     min-width: auto;
-    padding-top: 20px;
+    padding-top: 1.25rem;
     padding-bottom: 0px;
+  }
+
+  @media (max-width: 768px) {
+      width: calc(100% - 1em);
+      padding-top: calc(var(--header-height) + 1rem);
   }
 `
 

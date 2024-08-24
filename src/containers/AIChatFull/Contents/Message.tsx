@@ -276,6 +276,8 @@ const MessageContents = styled.div`
   }
 
   @media (max-width: 768px) {
+    min-width: 50%;
+    max-width: calc(100% - 2rem);
     padding: 1.125rem 1.25rem;
     padding-bottom: 0.5rem;
   }
@@ -304,6 +306,10 @@ const UserMessageContents = styled.div`
       background-color: var(--bg-chat-message-user-mobile);
 
       color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.875em;
   }
 `
 const MessageUser = styled.div`

@@ -113,7 +113,7 @@ const RootLayout = ({
     <html lang="ko" data-theme='dark'>
       <body>
         <Script id="client-side-code" dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense>
           <RecoilRootWrapper>
             <StyledComponentsRegistry>
               <ClientWrapper>

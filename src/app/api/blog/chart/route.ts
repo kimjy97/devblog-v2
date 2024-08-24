@@ -1,6 +1,6 @@
 import dbConnect from '@/lib/mongodb';
 import Visit from '@/models/Visit';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import moment from 'moment-timezone';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
 
