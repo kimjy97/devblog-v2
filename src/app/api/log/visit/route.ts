@@ -2,7 +2,6 @@ import { ResponseError, ResponseSuccess } from '@/constants/api';
 import dbConnect from '@/lib/mongodb';
 import DailyPostView from '@/models/DailyPostView';
 import Post from '@/models/Post';
-import PostView from '@/models/PostView';
 import Visit from '@/models/Visit';
 import { getFormatLogDate } from '@/utils/date';
 import { getClientIp } from '@/utils/ip';
@@ -75,13 +74,6 @@ export async function POST(req: NextRequest) {
           date: clientNow.toDate()
         });
 
-        // PostView 모델 업데이트
-        await PostView.findOneAndUpdate(
-          { postId },
-          { $inc: { views: 1 }, date: clientNow.toDate() },
-          { new: true, upsert: true }
-        );
-
         // Post 모델의 view 필드도 업데이트
         await Post.findOneAndUpdate(
           { postId: parseInt(postId, 10) },
@@ -89,7 +81,7 @@ export async function POST(req: NextRequest) {
         );
       } else {
         // 이미 오늘 조회한 경우, 현재 조회수만 가져옵니다
-        await PostView.findOne({ postId });
+        await Post.findOne({ postId });
       }
     }
 

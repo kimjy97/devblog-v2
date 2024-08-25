@@ -6,14 +6,14 @@ import GuestbookComment from '@/models/GuestbookComment';
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: { guestbookCommentId: string } }
 ) {
   await dbConnect();
-  const { commentId } = params;
+  const { guestbookCommentId } = params;
   const body = await req.json();
 
   try {
-    const comment = await GuestbookComment.findOne({ commentId });
+    const comment = await GuestbookComment.findOne({ guestbookCommentId });
 
     if (!comment) {
       return ResponseError(404, '댓글을 찾을 수 없습니다.');
@@ -23,7 +23,7 @@ export async function PUT(
     }
 
     await GuestbookComment.findOneAndUpdate(
-      { commentId },
+      { guestbookCommentId },
       {
         $set: {
           content: body.content,
@@ -47,15 +47,15 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: { guestbookCommentId: string } }
 ) {
   await dbConnect();
-  const { commentId } = params;
+  const { guestbookCommentId } = params;
   const { searchParams } = new URL(req.url);
   const password = searchParams.get('password');
 
   try {
-    const comment = await GuestbookComment.findOne({ commentId });
+    const comment = await GuestbookComment.findOne({ guestbookCommentId });
     if (!comment) {
       return ResponseError(404, '댓글을 찾을 수 없습니다.');
     }
@@ -63,7 +63,7 @@ export async function DELETE(
       return ResponseError(403, '설정된 비밀번호와 다릅니다.');
     }
 
-    await GuestbookComment.deleteOne({ commentId });
+    await GuestbookComment.deleteOne({ guestbookCommentId });
 
     const comments = await GuestbookComment.find()
       .sort({ createdAt: -1 })

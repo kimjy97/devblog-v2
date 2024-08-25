@@ -35,7 +35,7 @@ const Comment = ({ data, set }: IProps): JSX.Element => {
       password: deletePasswordInput,
     }
     const apiUrl = pathname === '/guest' ?
-      `/api/guestbook/${data.commentId}?password=${encodeURIComponent(body.password)}`
+      `/api/guestbook/${data.guestbookCommentId}?password=${encodeURIComponent(body.password)}`
       :
       `/api/blog/post/comment/${data.commentId}?postId=${data.postId}&password=${encodeURIComponent(body.password)}`;
 
@@ -73,7 +73,7 @@ const Comment = ({ data, set }: IProps): JSX.Element => {
     }
 
     const apiUrl = pathname === '/guest' ?
-      `/api/guestbook/${data.commentId}`
+      `/api/guestbook/${data.guestbookCommentId}`
       :
       `/api/blog/post/comment/${data.commentId}`;
 

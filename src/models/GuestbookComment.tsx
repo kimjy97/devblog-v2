@@ -3,7 +3,7 @@ import AutoIncrementFactory from 'mongoose-sequence';
 import moment from 'moment-timezone';
 
 export interface IGuestbookComment extends Document {
-  commentId: number;
+  guestbookCommentId: number;
   postId: number;
   userIp: string;
   role: string;
