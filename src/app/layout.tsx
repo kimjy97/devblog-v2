@@ -111,6 +111,9 @@ const RootLayout = ({
 
   return (
     <html lang="ko" data-theme='dark'>
+      <head>
+        <meta name="google-site-verification" content="a2fgyHnx6CNoDmHMVOuzQTV4DQqn7a-WQkMF8YNLXvw" />
+      </head>
       <body>
         <Script id="client-side-code" dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />
         <Suspense>
