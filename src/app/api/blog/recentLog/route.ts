@@ -6,7 +6,7 @@ export async function GET() {
   await dbConnect();
 
   try {
-    const logs = await RecentLog.find();
+    const logs = await RecentLog.find().sort({ date: -1 });
 
     return ResponseSuccess(true, { logs });
   } catch (error) {

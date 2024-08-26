@@ -40,7 +40,7 @@ const RecentLog = (): JSX.Element => {
         <p>RECENT LOG</p>
       </Title>
       <ActivityList>
-        {list ? list.length > 0 ? [...list].reverse().map((i: IActivity, idx: number) =>
+        {list ? list.length > 0 ? [...list].map((i: IActivity, idx: number) =>
           <Activity key={idx} href={i.link ?? ''}>
             <Content>
               <p id='ct'>{i.content}</p>
