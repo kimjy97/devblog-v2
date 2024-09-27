@@ -255,7 +255,7 @@ const AIIcon = styled(IconAI)`
 const MessageContents = styled.div`
   display: flex;
   flex-direction: column;
-  padding-top: 0.625rem;
+  padding-top: 0.25rem;
   flex: 1;
   white-space: pre-line;
   color: var(--text-normal);
