@@ -1,18 +1,22 @@
-import { apiPost } from '@/services/api';
-import { PostInfo } from '@/types/post';
+// src/app/api/sitemap/route.ts
+import { IPost } from '@/models/Post';
+import { serverApiPost } from '@/services/api';
 import { NextRequest, NextResponse } from 'next/server';
 
 const fetchPosts = async () => {
-  const result: PostInfo[] = await apiPost('/blog/postList', {})
-    .then((res) => res.data.posts);
-
-  return result;
+  try {
+    const result = await serverApiPost('/api/blog/postList', {});
+    return result.data.posts;
+  } catch (error) {
+    return []; // 에러 발생시 빈 배열 반환
+  }
 }
 
 export async function GET(req: NextRequest) {
   const host = req.headers.get('host');
   const protocol = req.headers.get('x-forwarded-proto') || 'http';
   const origin = `${protocol}://${host}`;
+
   // 정적 페이지 목록
   const staticPages = [
     { url: `${origin}/`, lastMod: new Date().toISOString() },
@@ -22,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   // 동적 게시글 목록 가져오기
   const posts = await fetchPosts();
-  const postPages = posts.map((post) => ({
+  const postPages = posts.map((post: IPost) => ({
     url: `${origin}/post/${post.postId}`,
     lastMod: new Date(new Date(`${post.date.replaceAll(' ', '')} ${post.time.slice(3).replaceAll(' ', '')}`)),
   }));
