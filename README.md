@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🔮 서비스 소개
 
-## Getting Started
+개발 블로그와 AI 챗봇 서비스를 포함한 웹 서비스 프로젝트입니다.
 
-First, run the development server:
+## 목차
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [개발 블로그](#개발-블로그)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  - [주요 기능](#-블로그-주요-기능)
+  - [기술 스택](#-블로그-기술-스택)
+  - [핵심 기능 설명](#-블로그-핵심-기능-설명)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [AI 챗봇 서비스](#ai-챗봇-서비스)
+  - [주요 기능](#-ai-챗봇-주요-기능)
+  - [기술 스택](#-ai-챗봇-기술-스택)
+  - [핵심 기능 설명](#-ai-챗봇-핵심-기능-설명)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
 
-## Learn More
+# 📄 개발 블로그
 
-To learn more about Next.js, take a look at the following resources:
+프론트엔드 개발자 김종연의 개발 블로그입니다. 개발 관련 공부 및 이슈를 공유하고자 직접 Next.js로 개발한 블로그입니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ✨ 블로그 주요 기능
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- 📝 마크다운 기반의 블로그 포스팅
+- 🔍 게시물 검색 및 정렬 기능
+- 💖 게시물 좋아요 시스템
+- 💬 댓글 시스템 (등록/수정/삭제)
+- 🌓 다크/라이트 모드 지원
+- 📱 반응형 웹 디자인
+- 🎯 SEO 최적화
 
-## Deploy on Vercel
+## 🛠 블로그 기술 스택
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**: Next.js, TypeScript, Styled Components
+- **상태 관리**: Recoil
+- **데이터베이스**: MongoDB
+- **배포**: Vercel
+- **컨텐츠**: React-Markdown
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 💡 블로그 핵심 기능 설명
+
+### 게시물 시스템
+
+- 마크다운 문법을 지원하여 풍부한 포맷팅이 가능한 게시물 작성
+- 게시물 카테고리 분류 및 태그 시스템
+- 게시물 조회수 및 좋아요 수 트래킹
+- 최신순, 인기순 등 다양한 정렬 옵션 제공
+
+### 검색 및 필터링
+
+- 제목, 내용, 태그 기반의 통합 검색 기능
+- 카테고리별 필터링
+- 실시간 검색어 하이라이팅
+
+### SEO 최적화
+
+- 동적 메타 태그 생성
+- 사이트맵 자동 생성
+- 검색 엔진 최적화된 URL 구조
+
+### 성능 최적화
+
+- **서버 사이드 렌더링**: Next.js의 SSR을 활용한 초기 로딩 성능 최적화
+- **이미지 최적화**: Next.js Image 컴포넌트를 활용한 이미지 최적화
+- **스켈레톤 UI**: 데이터 로딩 시 사용자 경험 개선
+
+---
+
+# 📄 AI 챗봇 서비스
+
+Google의 Gemini API를 활용한 대화형 AI 챗봇 서비스입니다. 실시간 대화는 물론, 음성 응답과 멀티미디어 분석 기능을 제공합니다.
+
+## ✨ AI 챗봇 주요 기능
+
+- 💬 Gemini API 스트리밍을 활용한 실시간 대화
+- 🗣️ Google Cloud TTS를 통한 음성 응답
+- 🖼️ 이미지 분석 기능
+- 🎵 음성 파일 처리
+- 💾 브라우저 저장소를 활용한 대화 내역 유지
+- 🌓 다크/라이트 모드 지원
+- 📱 모든 디바이스를 위한 반응형 디자인
+
+## 🛠 AI 챗봇 기술 스택
+
+- **Frontend**: Next.js, TypeScript, Styled Components
+- **상태 관리**: Recoil
+- **데이터베이스**: MongoDB
+- **AI/클라우드**: Google Cloud Services (Gemini API, TTS)
+
+## 💡 AI 챗봇 핵심 기능 설명
+
+### 스트리밍을 활용한 실시간 대화
+
+- Gemini API의 스트리밍 기능을 활용하여 응답이 생성되는 즉시 사용자에게 표시
+- 하루 40,000 토큰 제한 내에서 자유로운 대화 가능
+- 대화 내용은 브라우저 저장소에 자동 저장되어 언제든지 이전 대화 확인 가능
+
+### 음성 응답 기능
+
+Google Cloud TTS를 활용하여 AI의 텍스트 응답을 자연스러운 음성으로 변환합니다.
+
+### 성능 최적화
+
+- **실시간 응답**: 스트리밍 방식으로 응답 대기 시간 최소화
+- **렌더링 최적화**: 긴 대화에서도 원활한 UI 표시
+- **효율적인 상태 관리**: Recoil을 활용한 최적화된 상태 관리
+- **데이터 지속성**: Local Storage를 활용한 대화 내역 유지
