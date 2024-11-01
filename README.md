@@ -1,6 +1,8 @@
 # 🔮 서비스 소개
 
-개발 블로그와 AI 챗봇 서비스를 포함한 웹 서비스 프로젝트입니다.
+개발 블로그와 AI 챗봇 서비스를 포함한 웹 서비스 프로젝트입니다.  
+🔗 [개발 블로그 바로가기](https://kimjy.vercel.app)  
+🔗 [AI 챗봇 서비스 바로가기](https://kimjy.vercel.app/chat)
 
 ## 목차
 
@@ -19,7 +21,8 @@
 
 # 📄 개발 블로그
 
-프론트엔드 개발자 김종연의 개발 블로그입니다. 개발 관련 공부 및 이슈를 공유하고자 직접 Next.js로 개발한 블로그입니다.
+프론트엔드 개발자 김종연의 개발 블로그입니다. 개발 관련 공부 및 이슈를 공유하고자 직접 Next.js로 개발한 블로그입니다.  
+🔗 [사이트 바로가기](https://kimjy.vercel.app)
 
 <img width="1920" alt="blog_1" src="https://github.com/user-attachments/assets/e1de76dd-8cce-4afc-9214-5dd63ef6e2eb">
 
@@ -73,7 +76,8 @@
 
 # 📄 AI 챗봇 서비스
 
-Google의 Gemini API를 활용한 대화형 AI 챗봇 서비스입니다. 실시간 대화는 물론, 음성 응답과 멀티미디어 분석 기능을 제공합니다.
+Google의 Gemini API를 활용한 대화형 AI 챗봇 서비스입니다. 실시간 대화는 물론, 음성 응답과 멀티미디어 분석 기능을 제공합니다.  
+🔗 [사이트 바로가기](https://kimjy.vercel.app/chat)
 
 <img width="1920" alt="chat_1" src="https://github.com/user-attachments/assets/abec8164-7359-4e0f-9b7b-8d41198c47db">
 
