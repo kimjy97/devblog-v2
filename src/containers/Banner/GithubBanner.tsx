@@ -25,7 +25,12 @@ const GithubBanner = (): JSX.Element => {
   }, []);
 
   return (
-    <Container className={Pretendard.className} id='fade_2'>
+    <Container
+      className={Pretendard.className}
+      id='fade_2'
+      href='https://github.com/kimjy97'
+      target='_target'
+    >
       <ContentsWrapper>
         <RadialBackground ref={RadialRef} $mouseX={mousePosition.x} $mouseY={mousePosition.y} />
         <GithubIcon width={54} height={54} />
@@ -36,7 +41,7 @@ const GithubBanner = (): JSX.Element => {
 };
 export default GithubBanner;
 
-const Container = styled.div`
+const Container = styled.a`
   position: relative;
   height: 160px;
 
@@ -47,6 +52,7 @@ const Container = styled.div`
   overflow: hidden;
 
   transition: 150ms, border 150ms;
+  cursor: pointer;
 
   &:hover {
     border: 1px solid var(--bg-banner-github-border-hover);

@@ -24,7 +24,12 @@ const PortfolioBanner = () => {
   }, []);
 
   return (
-    <Container className={Pretendard.className} id='fade_2'>
+    <Container
+      className={Pretendard.className}
+      id='fade_2'
+      href='https://kimjy-portfolio.vercel.app'
+      target='_target'
+    >
       <Background />
       <RadialBackground ref={RadialRef} $mouseX={mousePosition.x} $mouseY={mousePosition.y} />
       <ContentsWrapper>
@@ -39,7 +44,7 @@ const PortfolioBanner = () => {
 export default PortfolioBanner;
 
 
-const Container = styled.div`
+const Container = styled.a`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -52,7 +57,7 @@ const Container = styled.div`
   border-radius: 12px;
   box-shadow: var(--bg-pitem-boxshadow);
   overflow: hidden;
-  cursor: default;
+  cursor: pointer;
   user-select: none;
 
   transition: 150ms, border 150ms;
