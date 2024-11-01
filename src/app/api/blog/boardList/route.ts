@@ -4,6 +4,9 @@ import moment from 'moment-timezone';
 import Board from "@/models/Board";
 import { ResponseSuccess } from "@/constants/api";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   await dbConnect();
 
