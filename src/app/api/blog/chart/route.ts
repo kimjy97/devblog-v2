@@ -4,6 +4,9 @@ import { NextRequest } from 'next/server';
 import moment from 'moment-timezone';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const getDates = (numDays: number, timezone: string) => {
   const dates = [];
   const endDate = moment().tz(timezone).endOf('day');
