@@ -334,7 +334,8 @@ html[data-theme="dark"] {
   ul,
   ol {
     margin-bottom: 1em;
-    padding-left: 2em;
+    padding-left: 1em;
+    list-style: initial;
   }
 
   blockquote {
