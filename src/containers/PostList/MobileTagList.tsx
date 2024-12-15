@@ -65,9 +65,10 @@ const MobileTagList = (): JSX.Element => {
 export default MobileTagList;
 
 const Container = styled.div`
+  position: relative;
   display: none;
   align-self: flex-start;
-  width: 100%;
+  width: calc(100vw - 1.5rem);
   padding-bottom: 1.5rem;
   
   @media (max-width: 768px) {
@@ -75,14 +76,15 @@ const Container = styled.div`
   }
 `
 const Wrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   display: flex;
   align-items: flex-start;
   gap: 1rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   &::-webkit-scrollbar {
     display: none;
