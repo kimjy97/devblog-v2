@@ -36,21 +36,23 @@ const formatDate = (dateString: string, timeString: string) => {
 export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const domain = process.env.NEXT_PUBLIC_URL
+
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: '/',
+      url: `${domain}/`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: '/chat',
+      url: `${domain}/chat`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: '/guest',
+      url: `${domain}/guest`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -59,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const posts = await fetchPostsForSitemap()
   const postPages: MetadataRoute.Sitemap = posts.map((post: IPost) => ({
-    url: `/post/${post.postId}`,
+    url: `${domain}/post/${post.postId}`,
     lastModified: formatDate(post.date, post.time),
     changeFrequency: 'weekly',
     priority: 0.5
