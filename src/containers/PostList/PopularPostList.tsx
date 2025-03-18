@@ -17,42 +17,46 @@ const PopularPostList = (): JSX.Element => {
 
   const getData = async () => {
     const data: PostInfo[] = await apiPost('/api/blog/postList', {}).then((res) => res.data.posts);
-    setDATA(data.reverse() ?? []);
-  }
+    const reversedData = data.reverse() ?? [];
+    const sortedData = sortPosts(postType, reversedData);
+    setDATA(sortedData);
+  };
 
-  useEffect(() => {
-    if (postType) {
-      const result: PostInfo[] = [...DATA];
-      switch (postType) {
-        case '인기 게시물':
-          result.sort((a: PostInfo, b: PostInfo) => {
-            const aScore = a.like + a.cmtnum;
-            const bScore = b.like + b.cmtnum;
-            if (aScore === 0) return 1;
-            if (bScore === 0) return -1;
-            return (bScore / b.view) - (aScore / a.view);
-          });
-          break;
-        case '많이 찾아본 게시물':
-          result.sort((a: PostInfo, b: PostInfo) => b.view - a.view);
-          break;
-        case '도움이 된 게시물':
-          result.sort((a: PostInfo, b: PostInfo) => {
-            if (a.like === 0) return 1;
-            if (b.like === 0) return -1;
-            return b.like - a.like;
-          });
-          break;
-        default:
-          break;
-      }
-      setDATA(result);
+  const sortPosts = (type: string, posts: PostInfo[]): PostInfo[] => {
+    const result = [...posts];
+    switch (type) {
+      case '인기 게시물':
+        result.sort((a, b) => {
+          const aScore = a.like + a.cmtnum;
+          const bScore = b.like + b.cmtnum;
+          if (aScore === 0) return 1;
+          if (bScore === 0) return -1;
+          return (bScore / b.view) - (aScore / a.view);
+        });
+        break;
+      case '많이 찾아본 게시물':
+        result.sort((a, b) => b.view - a.view);
+        break;
+      case '도움이 된 게시물':
+        result.sort((a, b) => {
+          if (a.like === 0) return 1;
+          if (b.like === 0) return -1;
+          return b.like - a.like;
+        });
+        break;
+      default:
+        break;
     }
-  }, [postType, DATA]);
+    return result;
+  };
 
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    setDATA((prev) => sortPosts(postType, prev));
+  }, [postType]);
 
   return (
     <Container className={Pretendard.className} id='fade_3'>
