@@ -4,6 +4,7 @@ import ReactjsImg from '@public/images/categorys/Reactjs_category.png';
 import ReactNativeImg from '@public/images/categorys/ReactNative_category.png';
 import NextjsImg from '@public/images/categorys/Nextjs_category.png';
 import HtmlImg from '@public/images/categorys/html_category.png';
+import TipImg from '@public/images/categorys/tip_category.png';
 
 interface IProps {
   category: string,
@@ -64,6 +65,17 @@ const TumbnailDefault = ({ category }: IProps) => {
       },
       imageStyle: {
         height: '52%',
+      }
+    },
+    {
+      category: 'TIP',
+      imageSrc: TipImg,
+      filter: 'drop-shadow(0 -6px 36px #00000000)',
+      style: {
+        background: 'radial-gradient(#99991c 24%, #787823 48%, #3f4119 96%)',
+      },
+      imageStyle: {
+        height: '40%',
       }
     }
   ]

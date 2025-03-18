@@ -46,7 +46,13 @@ const PostList = (): JSX.Element => {
     // 정렬 적용
     switch (postType) {
       case '인기순':
-        filtered.sort((a: PostInfo, b: PostInfo) => (b.like + b.cmtnum / b.view) - (a.like + a.cmtnum / a.view));
+        filtered.sort((a: PostInfo, b: PostInfo) => {
+          const aScore = a.like + a.cmtnum;
+          const bScore = b.like + b.cmtnum;
+          if (aScore === 0) return 1;
+          if (bScore === 0) return -1;
+          return (bScore / b.view) - (aScore / a.view);
+        });
         break;
       case '최신순':
         filtered.sort((a: PostInfo, b: PostInfo) => new Date(b.date).getTime() - new Date(a.date).getTime());

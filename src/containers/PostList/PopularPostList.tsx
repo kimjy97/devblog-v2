@@ -25,21 +25,30 @@ const PopularPostList = (): JSX.Element => {
       const result: PostInfo[] = [...DATA];
       switch (postType) {
         case '인기 게시물':
-          result.sort((a: PostInfo, b: PostInfo) => (b.like + b.cmtnum / b.view) - (a.like + a.cmtnum / a.view));
+          result.sort((a: PostInfo, b: PostInfo) => {
+            const aScore = a.like + a.cmtnum;
+            const bScore = b.like + b.cmtnum;
+            if (aScore === 0) return 1;
+            if (bScore === 0) return -1;
+            return (bScore / b.view) - (aScore / a.view);
+          });
           break;
         case '많이 찾아본 게시물':
           result.sort((a: PostInfo, b: PostInfo) => b.view - a.view);
           break;
         case '도움이 된 게시물':
-          result.sort((a: PostInfo, b: PostInfo) => b.like - a.like);
+          result.sort((a: PostInfo, b: PostInfo) => {
+            if (a.like === 0) return 1;
+            if (b.like === 0) return -1;
+            return b.like - a.like;
+          });
           break;
         default:
           break;
       }
-
       setDATA(result);
     }
-  }, [postType])
+  }, [postType, DATA]);
 
   useEffect(() => {
     getData();
