@@ -30,4 +30,4 @@ export const safetySettings = [
 ];
 
 // 높을 수록 부드러운 Message 출력
-export const msgSliceNum = 24;
+export const msgSliceNum = 12;

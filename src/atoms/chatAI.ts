@@ -9,7 +9,7 @@ export const currentChatIdState = atom<number>({
 
 export const requestPromptState = atom<any>({
   key: 'requestPromptState',
-  default: '',
+  default: [],
 });
 
 export const chatArrState = atom<IChatArray[]>({

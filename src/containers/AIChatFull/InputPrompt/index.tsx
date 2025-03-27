@@ -166,7 +166,7 @@ const InputPrompt = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (!requestPrompt) {
+    if (requestPrompt.length === 0) {
       setIsSend(false);
       setAttachedFilePreview([]);
       setAttachedFile([]);

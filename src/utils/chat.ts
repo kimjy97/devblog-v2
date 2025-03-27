@@ -34,7 +34,6 @@ export const usingToken = (model: string, token: number) => {
       const tokenObj = JSON.parse(storage);
       const index = tokenObj.findIndex((i: any) => i.model === model);
 
-      // 토큰셋 생성
       const addTokenSet = () => {
         const tokenSet = {
           model,
@@ -44,7 +43,6 @@ export const usingToken = (model: string, token: number) => {
         tokenObj.push(tokenSet);
       }
 
-      // 토큰셋 초기화
       const resetTokenSet = () => {
         tokenObj[index].expireTime = now.getTime() + expireTime;
         tokenObj[index].token = token;
@@ -120,13 +118,17 @@ export const saveChatFull = (contents: IChatArray[]) => {
 
 export const transformContetnsArr = (arr: any[]) => {
   const msgArr: any = {
-    history: [],
+    history: [{
+      role: 'user',
+      parts: [{ text: "You're a helpful assistant. When you write code, Use proper markdown format like:```jsconsole.log('Hello')```" }]
+    }],
     generationConfig: {
       maxOutputTokens: 1600,
+      responseModalities: ["image", "text"],
     },
   };
 
-  arr.slice(0, -1).forEach((i: any) => {
+  arr.slice(0, -2).forEach((i: any) => {
     const attachedArr: any[] = [];
 
     if (i.attachedFiles) {
@@ -135,19 +137,50 @@ export const transformContetnsArr = (arr: any[]) => {
           inlineData: {
             data: j.uri.split(',')[1],
             mimeType: getFileTypeFromBase64(j.uri),
-          }
+          },
         });
       });
     }
 
-    msgArr.history.push({
-      role: i.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: i.contents }, ...attachedArr]
-    });
+    if (i.role === 'assistant') {
+      if (Array.isArray(i.contents)) {
+        const parts = i.contents
+          .map((part: any) => {
+            if (typeof part === 'string') {
+              return { text: part };
+            }
+            return null;
+          })
+          .filter((part: null) => part !== null);
+
+        if (parts.length > 0) {
+          msgArr.history.push({
+            role: "model",
+            parts,
+          });
+        }
+      } else if (i.contents) {
+        msgArr.history.push({
+          role: "model",
+          parts: [{ text: i.contents }],
+        });
+      }
+    } else {
+      const userParts = [{ text: i.contents }, ...attachedArr].filter(
+        (part) => part && (part.text || part.inlineData)
+      );
+
+      if (userParts.length > 0) {
+        msgArr.history.push({
+          role: "user",
+          parts: userParts,
+        });
+      }
+    }
   });
 
   return msgArr;
-}
+};
 
 /** 마크다운 문자 제거 */
 export const removeMarkdown = (text: string): string => {

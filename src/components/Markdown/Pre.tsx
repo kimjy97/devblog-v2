@@ -33,7 +33,7 @@ const Pre = (
 export default Pre;
 
 const Container = styled.div`
-    margin: 2em 0 !important;
+    margin: 1.25em 0 !important;
     background-color: rgb(8, 8, 12) !important;
     border-radius: 1em;
 `;

@@ -16,6 +16,7 @@ import { useRecoilValue } from "recoil";
 import { currentChatIdState } from "@/atoms/chatAI";
 import LoadingMessage from "@/containers/AIChatFull/Contents/LoadingMessage";
 import { apiPost } from "@/services/api";
+import { IChatContentsType } from "@/types/chat";
 
 const Message = ({ data }: any) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -159,11 +160,24 @@ const Message = ({ data }: any) => {
           <AIIcon />
         </ProfileImg>
         <MessageContents>
-          {data.contents ?
+          {Array.isArray(data.contents) ? (
+            data.contents.map((item: { mimeType: string, data: string }, idx: number) =>
+              typeof item === 'string' ? (
+                <MarkdownViewer key={idx} text={item} />
+              ) : item.data ? (
+                <ImageWrapper key={idx}>
+                  <Image
+                    src={item.data}
+                    alt={`generated-img-${idx}`}
+                    fill
+                    objectFit="contain"
+                  />
+                </ImageWrapper>
+              ) : null
+            )
+          ) : (
             <MarkdownViewer text={data.contents} />
-            :
-            <MessageLoading />
-          }
+          )}
           <OptionWrapper className={data.done && data.contents ? '' : 'invisible'}>
             <Result className={data.contents.slice(-14) === '...***(중단됨)***' ? 'stop' : ''}>{data.contents.slice(-14) === '...***(중단됨)***' ? 'ERROR' : 'DONE'}</Result>
             {audioUrl && <audio ref={audioRef} src={audioUrl} onEnded={handleAudioEnd} />}
