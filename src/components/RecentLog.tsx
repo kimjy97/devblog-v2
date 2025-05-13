@@ -1,12 +1,15 @@
+'use client'
+
 import styled from 'styled-components';
-import { Pretendard } from '../../public/fonts';
 import IconFootprint from '@public/svgs/footprint.svg';
+import { IoRefreshOutline } from 'react-icons/io5';
 import { getFormatDate, getIsNewPost } from '@utils/date';
 import Tooltip from '@components/Tooltip';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { apiGet } from '@/services/api';
 import Link from 'next/link';
 import LoadingCircle from '@/components/LoadingCircle';
+import { Pretendard } from '@public/fonts';
 
 interface IActivity {
   content: string,
@@ -18,26 +21,66 @@ interface IActivity {
 
 const RecentLog = (): JSX.Element => {
   const [list, setList] = useState<IActivity[] | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isLoadingRef = useRef<boolean>(false);
 
-  const getRecentLog = async () => {
-    await apiGet('/api/blog/recentLog')
-      .then(res => {
-        setList(res.logs);
-      })
-      .catch(() => {
-        setList([])
-      });
-  }
+  const fetchRecentLogs = async () => {
+    if (isLoadingRef.current) return;
+
+    isLoadingRef.current = true;
+    setIsLoading(true);
+
+    try {
+      const res = await apiGet('/api/blog/recentLog');
+      setList(res.logs);
+
+      if (res.timestamp) {
+        setLastUpdated(res.timestamp);
+      }
+    } catch (error) {
+      console.error('최근 로그 가져오기 실패:', error);
+      setList([]);
+    } finally {
+      isLoadingRef.current = false;
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getRecentLog();
-  }, [])
+    fetchRecentLogs();
+
+    const intervalId = setInterval(() => {
+      fetchRecentLogs();
+    }, 30 * 60 * 1000);
+
+    refreshIntervalRef.current = intervalId;
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      refreshIntervalRef.current = null;
+    };
+  }, []);
+
+  const handleRefresh = () => {
+    fetchRecentLogs();
+  };
 
   return (
     <Container className={Pretendard.className} id='fade_4'>
       <Title>
         <FootprintIcon width={16} height={16} />
         <p>RECENT LOG</p>
+        <RefreshButton
+          onClick={handleRefresh}
+          disabled={isLoading}
+          title={lastUpdated ? `마지막 업데이트: ${new Date(lastUpdated).toLocaleString()}` : '새로고침'}
+        >
+          <IoRefreshOutline size={16} className={isLoading ? 'spinning' : ''} />
+        </RefreshButton>
       </Title>
       <ActivityList>
         {list ? list.length > 0 ? [...list].map((i: IActivity, idx: number) =>
@@ -205,5 +248,40 @@ const NoList = styled.div`
   color: var(--text-sub-dark);
   font-size: 0.875rem;
   font-weight: 500;
+`
+
+const RefreshButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-normal);
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .spinning {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `
 
