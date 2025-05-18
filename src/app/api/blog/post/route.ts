@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   await dbConnect();
 
-  const post = await Post.findOne({ postId: Number(id) });
+  const post = await Post.findOne({ postId: Number(id), status: true });
 
   if (!post) {
     return ResponseError(404, '게시물을 찾을 수 없습니다.');

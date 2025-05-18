@@ -14,6 +14,7 @@ export interface IPost extends Document {
   cmtnum: number;
   like: number;
   tags: string[];
+  status: boolean;
 }
 
 moment.tz.setDefault("Asia/Seoul");
@@ -30,6 +31,7 @@ const postSchema = new mongoose.Schema({
   cmtnum: { type: Number, default: 0 },
   like: { type: Number, default: 0 },
   tags: [String],
+  status: { type: Boolean, default: false },
 }, { timestamps: true });
 
 // AutoIncrement 설정

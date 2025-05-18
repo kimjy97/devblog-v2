@@ -41,8 +41,10 @@ export async function GET() {
     return '방금 전'; // 기본 반환값 추가
   }
 
-  const posts = await Post.find().sort({ postId: 1 }).skip(1);
+  const posts = await Post.find({ status: true }).sort({ postId: 1 });
   const boards = await Board.find({});
 
-  return ResponseSuccess(true, { boards: getBoardlist(posts, boards) });
+  const response = ResponseSuccess(true, { boards: getBoardlist(posts, boards) });
+  response.headers.set('Cache-Control', 'no-store, max-age=0');
+  return response;
 }

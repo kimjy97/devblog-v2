@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
   const { board } = JSON.parse(passedValue);
 
   const posts = board ?
-    await Post.find({ postId: { $ne: 0 }, 'tags.0': board }).sort({ postId: 1 }) :
-    await Post.find({ postId: { $ne: 0 } }).sort({ postId: 1 });
+    await Post.find({ postId: { $ne: 0 }, 'tags.0': board, status: true }).sort({ postId: 1 }) :
+    await Post.find({ postId: { $ne: 0 }, status: true }).sort({ postId: 1 });
 
   // 태그 카운트 계산
   const tagCounts = posts.reduce((acc, post) => {
