@@ -6,6 +6,7 @@ import IconView from '@public/svgs/view.svg';
 import { useRouter } from 'next/navigation';
 import { routeLoadingState } from '@/atoms/pageLoading';
 import { useSetRecoilState } from 'recoil';
+import moment from 'moment-timezone';
 
 interface IProps {
   data: any,
@@ -55,7 +56,7 @@ const Post = ({ data }: IProps): JSX.Element => {
       </TagListWrapper>
       <UploadInfoWrapper>
         <UploadInfo>{data.name}</UploadInfo>
-        <UploadInfo>{data.date}</UploadInfo>
+        <UploadInfo>{moment(data.createdAt).format('YYYY. MM. DD')}</UploadInfo>
       </UploadInfoWrapper>
     </Container>
   )

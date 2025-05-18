@@ -24,9 +24,8 @@ const fetchPostsForSitemap = async () => {
   }
 }
 
-const formatDate = (dateString: string, timeString: string) => {
+const formatDate = (date: Date) => {
   try {
-    const date = new Date(`${dateString.replaceAll(' ', '')} ${timeString.slice(3).replaceAll(' ', '')}`)
     return date
   } catch {
     return new Date()
@@ -62,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await fetchPostsForSitemap()
   const postPages: MetadataRoute.Sitemap = posts.map((post: IPost) => ({
     url: `${domain}/post/${post.postId}`,
-    lastModified: formatDate(post.date, post.time),
+    lastModified: formatDate(post.updatedAt),
     changeFrequency: 'weekly',
     priority: 0.5
   }))

@@ -10,8 +10,8 @@ export interface IComment extends Document {
   nickname: string;
   password: string;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   isEdited: boolean;
   parentCommentId?: number;
 }
@@ -26,10 +26,14 @@ const commentSchema = new Schema({
   password: { type: String, required: true },
   content: { type: String, required: true },
   createdAt: {
-    type: String,
-    default: () => moment().format('YYYY-MM-DD HH:mm:ss')
+    type: Date,
+    default: Date.now,
+    get: (date: Date) => moment(date).tz("Asia/Seoul")
   },
-  updatedAt: { type: String },
+  updatedAt: {
+    type: Date,
+    get: (date: Date) => date ? moment(date).tz("Asia/Seoul") : null
+  },
   isEdited: { type: Boolean, default: false },
   parentCommentId: { type: Number, ref: 'Comment' }
 });

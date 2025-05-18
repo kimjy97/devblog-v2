@@ -2,7 +2,6 @@ import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { getClientIp } from '@/utils/ip';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
-import moment from 'moment-timezone';
 import { createLog } from '@/utils/recentLog';
 import GuestbookComment from '@/models/GuestbookComment';
 import { getFormatLogDate } from '@/utils/date';
@@ -17,22 +16,19 @@ export async function POST(req: NextRequest) {
       return ResponseError(404, '비밀번호를 입력해주세요.');
     }
 
-    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-
     await GuestbookComment.create({
       ...body,
       userIp: ip,
       isEdited: false,
-      createdAt: currentTime,
-      updatedAt: currentTime
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     });
 
     const comments = await GuestbookComment.find().sort({ createdAt: -1 });
 
     await createLog(
       `방명록에 글이 달렸습니다.`,
-      currentTime,
+      Date.now(),
       body.nickname,
       `/guest`
     );

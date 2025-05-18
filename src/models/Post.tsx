@@ -8,9 +8,9 @@ export interface IPost extends Document {
   description: string;
   content: string;
   name: string;
-  date: string;
-  time: string;
   view: number;
+  createdAt: Date;
+  updatedAt: Date;
   cmtnum: number;
   like: number;
   tags: string[];
@@ -25,14 +25,21 @@ const postSchema = new mongoose.Schema({
   description: { type: String, required: true },
   content: { type: String, required: true },
   name: { type: String, default: 'JongYeon' },
-  date: { type: String, default: () => moment().format('YYYY. MM. DD') },
-  time: { type: String, default: () => moment().format('a hh : mm') },
   view: { type: Number, default: 0 },
   cmtnum: { type: Number, default: 0 },
   like: { type: Number, default: 0 },
   tags: [String],
   status: { type: Boolean, default: false },
-}, { timestamps: true });
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    get: (date: Date) => moment(date).tz("Asia/Seoul")
+  },
+  updatedAt: {
+    type: Date,
+    get: (date: Date) => date ? moment(date).tz("Asia/Seoul") : null
+  },
+});
 
 // AutoIncrement 설정
 const AutoIncrement = AutoIncrementFactory(mongoose as any);

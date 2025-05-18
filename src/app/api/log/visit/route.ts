@@ -41,10 +41,13 @@ export async function POST(req: NextRequest) {
 
     if (!existingVisit) {
       // 오늘 방문 기록이 없으면 새로운 방문을 기록합니다
+      const userAgent = req.headers.get('user-agent');
+      // 오늘 방문 기록이 없으면 새로운 방문을 기록합니다
       await Visit.create({
         ip,
         pathname: categorizedPathname,
-        date: clientNow.toDate()
+        date: clientNow.toDate(),
+        userAgent,
       });
     }
 

@@ -10,8 +10,8 @@ export interface IGuestbookComment extends Document {
   nickname: string;
   password: string;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   isEdited: boolean;
   parentCommentId?: number;
 }
@@ -25,16 +25,20 @@ const GuestbookCommentSchema = new Schema({
   password: { type: String, required: true },
   content: { type: String, required: true },
   createdAt: {
-    type: String,
-    default: () => moment().format('YYYY-MM-DD HH:mm:ss')
+    type: Date,
+    default: Date.now,
+    get: (date: any): any => date ? moment(date).tz("Asia/Seoul") : null
   },
-  updatedAt: { type: String },
+  updatedAt: {
+    type: Date,
+    get: (date: any): any => date ? moment(date).tz("Asia/Seoul") : null
+  },
   isEdited: { type: Boolean, default: false },
   parentCommentId: { type: Number, ref: 'Comment' }
 });
 
 const AutoIncrement = AutoIncrementFactory(mongoose as any);
-GuestbookCommentSchema.plugin(AutoIncrement as any, { inc_field: 'guestbookCommentId', id: 'guestbook_comment_id_counter' });
+GuestbookCommentSchema.plugin(AutoIncrement as any, { inc_field: 'guestbookCommentId', id: 'guestbookcommentId' });
 
 const GuestbookComment = mongoose.models.GuestbookComment || mongoose.model<IGuestbookComment>('GuestbookComment', GuestbookCommentSchema);
 

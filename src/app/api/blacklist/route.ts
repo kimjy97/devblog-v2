@@ -1,4 +1,3 @@
-// app/api/blacklist/route.ts
 import { NextRequest } from 'next/server';
 import Blacklist from '@/models/Blacklist';
 import dbConnect from '@/lib/mongodb';

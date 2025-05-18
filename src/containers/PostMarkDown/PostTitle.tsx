@@ -1,5 +1,6 @@
 import { postInfoState } from '@/atoms/post';
 import { shimmer } from '@/styles/animation';
+import moment from 'moment-timezone';
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
@@ -22,7 +23,7 @@ const PostTitle = React.memo((): JSX.Element => {
           <NameAndDate>
             <div>{postInfo?.name}</div>
             <p>·</p>
-            <DateTime>{postInfo?.date}</DateTime>
+            <DateTime>{moment(postInfo.createdAt).format('YYYY. MM. DD')}</DateTime>
           </NameAndDate>
         </Wrapper> :
         <>

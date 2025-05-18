@@ -4,7 +4,6 @@ import Post from '@/models/Post';
 import dbConnect from '@/lib/mongodb';
 import { getClientIp } from '@/utils/ip';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
-import moment from 'moment-timezone';
 import { createLog } from '@/utils/recentLog';
 
 export async function POST(req: NextRequest) {
@@ -17,15 +16,12 @@ export async function POST(req: NextRequest) {
       return ResponseError(404, '비밀번호를 입력해주세요.');
     }
 
-    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-
     await Comment.create({
       ...body,
       userIp,
       isEdited: false,
-      createdAt: currentTime,
-      updatedAt: currentTime
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     });
 
     const post = await Post.findOneAndUpdate(
@@ -37,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     await createLog(
       `'${post.title.slice(0, 15)}...' 게시물에 댓글이 달렸습니다.`,
-      currentTime,
+      Date.now(),
       body.nickname,
       `/post/${body.postId}`
     );

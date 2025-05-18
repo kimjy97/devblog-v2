@@ -55,7 +55,7 @@ const PostList = (): JSX.Element => {
         });
         break;
       case '최신순':
-        filtered.sort((a: PostInfo, b: PostInfo) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        filtered.sort((a: IPost, b: IPost) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       case '댓글순':
         filtered.sort((a: PostInfo, b: PostInfo) => b.cmtnum - a.cmtnum);

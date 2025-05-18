@@ -3,7 +3,6 @@ import Comment from '@/models/Comment';
 import dbConnect from '@/lib/mongodb';
 import Post from '@/models/Post';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
-import moment from 'moment-timezone';
 
 export async function PUT(
   req: NextRequest,
@@ -28,7 +27,7 @@ export async function PUT(
       {
         $set: {
           content: body.content,
-          updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+          updatedAt: Date.now(),
           isEdited: true
         }
       },

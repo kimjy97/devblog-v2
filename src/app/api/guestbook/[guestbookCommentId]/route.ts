@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { ResponseError, ResponseSuccess } from '@/constants/api';
-import moment from 'moment-timezone';
 import GuestbookComment from '@/models/GuestbookComment';
 
 export async function PUT(
@@ -27,7 +26,7 @@ export async function PUT(
       {
         $set: {
           content: body.content,
-          updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+          updatedAt: Date.now(),
           isEdited: true
         }
       },
