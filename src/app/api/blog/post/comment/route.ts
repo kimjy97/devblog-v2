@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
   const postId = searchParams.get('postId');
 
   try {
-    const comments = await Comment.find({ postId })
+    const comments = await Comment.find({ postId, isShow: true })
       .sort({ createdAt: -1 })
       .select('-password -_id -__v')
       .lean();

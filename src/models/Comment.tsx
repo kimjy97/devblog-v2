@@ -13,6 +13,7 @@ export interface IComment extends Document {
   createdAt: Date;
   updatedAt: Date;
   isEdited: boolean;
+  isShow: boolean;
   parentCommentId?: number;
 }
 
@@ -35,6 +36,7 @@ const commentSchema = new Schema({
     get: (date: Date) => date ? moment(date).tz("Asia/Seoul") : null
   },
   isEdited: { type: Boolean, default: false },
+  isShow: { type: Boolean, default: true },
   parentCommentId: { type: Number, ref: 'Comment' }
 });
 
