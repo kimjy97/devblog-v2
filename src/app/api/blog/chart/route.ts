@@ -39,6 +39,9 @@ export async function POST(req: NextRequest) {
           date: {
             $gte: startDate.toDate(),
             $lt: endDate.toDate()
+          },
+          ip: {
+            $nin: ['127.0.0.1', 'localhost', '::1']
           }
         }
       },
