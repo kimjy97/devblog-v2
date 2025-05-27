@@ -27,8 +27,8 @@ const PopularPostList = (): JSX.Element => {
     switch (type) {
       case '인기 게시물':
         result.sort((a, b) => {
-          const aScore = a.like + a.cmtnum;
-          const bScore = b.like + b.cmtnum;
+          const aScore = (a.like * 2) + a.cmtnum;
+          const bScore = (b.like * 2) + b.cmtnum;
           if (aScore === 0) return 1;
           if (bScore === 0) return -1;
           return (bScore / b.view) - (aScore / a.view);
