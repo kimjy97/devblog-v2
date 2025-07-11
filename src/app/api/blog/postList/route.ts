@@ -30,5 +30,7 @@ export async function POST(req: NextRequest) {
     count
   }));
 
-  return NextResponse.json({ success: true, data: { posts, tags } });
+  const res = NextResponse.json({ success: true, data: { posts, tags } });
+  res.headers.set('Cache-Control', 'public, s-maxage=0, stale-while-revalidate=43200');
+  return res;
 }

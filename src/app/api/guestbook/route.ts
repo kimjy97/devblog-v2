@@ -52,7 +52,9 @@ export async function GET() {
       .select('-password -_id -__v')
       .lean();
 
-    return ResponseSuccess(true, { comments });
+    const res = ResponseSuccess(true, { comments });
+    res.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=10800');
+    return res;
   } catch (error) {
     return ResponseError(500, '댓글을 불러올 수 없습니다.', error);
   }

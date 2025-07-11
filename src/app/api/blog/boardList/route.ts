@@ -32,7 +32,7 @@ export async function GET() {
   moment.tz.setDefault("Asia/Seoul");
 
   try {
-    const posts = await Post.find({ status: true }).sort({ createdAt: -1 }); // Sort by createdAt descending to easily find latest
+    const posts = await Post.find({ status: true }).sort({ createdAt: -1 });
 
     const boardMap = new Map();
 
@@ -67,7 +67,7 @@ export async function GET() {
     boards.sort((a, b) => a.name.localeCompare(b.name));
 
     const response = ResponseSuccess(true, { boards });
-    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    response.headers.set('Cache-Control', 'public, s-maxage=0, stale-while-revalidate=43200');
     return response;
 
   } catch (error) {

@@ -73,7 +73,9 @@ export async function POST(req: NextRequest) {
       return visitCountByDate[dateString] || 0;
     });
 
-    return ResponseSuccess(true, { data });
+    const res = ResponseSuccess(true, { data });
+    res.headers.set('Cache-Control', 'public, s-maxage=0, stale-while-revalidate=10800');
+    return res;
   } catch (error) {
     return ResponseError(500, '알 수 없는 오류가 발생했습니다.', error);
   }

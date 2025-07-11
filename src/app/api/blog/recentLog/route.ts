@@ -16,7 +16,9 @@ export async function GET() {
       })
     ]) as any;
 
-    return ResponseSuccess(true, { logs, timestamp: new Date().toISOString() });
+    const res = ResponseSuccess(true, { logs, timestamp: new Date().toISOString() });
+    res.headers.set('Cache-Control', 'public, s-maxage=0, stale-while-revalidate=10800');
+    return res;
   } catch (error) {
     console.error('Recent log fetch error:', error);
 

@@ -1,7 +1,7 @@
 import Post from "@/models/Post";
 import dbConnect from "@/lib/mongodb";
 import { ResponseError, ResponseSuccess } from "@/constants/api";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url!);
@@ -19,5 +19,7 @@ export async function GET(req: NextRequest) {
     return ResponseError(404, '게시물을 찾을 수 없습니다.');
   }
 
-  return ResponseSuccess(true, { post });
+  const res = NextResponse.json({ success: true, post });
+  res.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=43200');
+  return res;
 }
