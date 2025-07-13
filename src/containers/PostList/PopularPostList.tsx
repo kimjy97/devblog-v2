@@ -11,9 +11,9 @@ import PlaceholderPost from '@/containers/PostList/PlaceholderPost';
 
 const PopularPostList = (): JSX.Element => {
   const [DATA, setDATA] = useState<PostInfo[]>([]);
-  const [postType, setPostType] = useState<string>('인기 게시물');
+  const [postType, setPostType] = useState<string>('최근 게시물');
 
-  const postTypeArr = ['인기 게시물', '많이 찾아본 게시물', '도움이 된 게시물'];
+  const postTypeArr = ['최근 게시물', '인기 게시물', '많이 찾아본 게시물', '도움이 된 게시물'];
 
   const getData = async () => {
     const data: PostInfo[] = await apiPost('/api/blog/postList', {}).then((res) => res.data.posts);
@@ -25,6 +25,9 @@ const PopularPostList = (): JSX.Element => {
   const sortPosts = (type: string, posts: PostInfo[]): PostInfo[] => {
     const result = [...posts];
     switch (type) {
+      case '최근 게시물':
+        result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        break;
       case '인기 게시물':
         result.sort((a, b) => {
           const aScore = (a.like * 2) + a.cmtnum;

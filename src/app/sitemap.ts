@@ -1,32 +1,30 @@
 import { MetadataRoute } from 'next'
-import { IPost } from '@/models/Post'
+import Post from '@/models/Post'
+import dbConnect from '@/lib/mongodb'
 
 const fetchPostsForSitemap = async () => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blog/postList`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Server',
-      },
-      body: JSON.stringify({}),
-    })
+    await dbConnect();
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch posts')
-    }
+    // status가 true인 게시물만 가져오기 (공개된 게시물만)
+    const posts = await Post.find({
+      postId: { $ne: 0 },
+      status: true
+    }).sort({ postId: -1 }); // 최신순으로 정렬
 
-    const data = await response.json()
-    return data.data.posts
+    return posts;
   } catch (error) {
     console.error('Sitemap generation error:', error)
     return []
   }
 }
 
-const formatDate = (date: Date) => {
+const formatDate = (date: Date | string) => {
   try {
-    return date
+    if (typeof date === 'string') {
+      return new Date(date);
+    }
+    return date instanceof Date ? date : new Date(date);
   } catch {
     return new Date()
   }
@@ -35,7 +33,7 @@ const formatDate = (date: Date) => {
 export const dynamic = 'force-dynamic'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const domain = process.env.NEXT_PUBLIC_URL
+  const domain = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -59,12 +57,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const posts = await fetchPostsForSitemap()
-  const postPages: MetadataRoute.Sitemap = posts.map((post: IPost) => ({
-    url: `${domain}/post/${post.postId}`,
-    lastModified: formatDate(post.updatedAt),
-    changeFrequency: 'weekly',
-    priority: 0.5
-  }))
+  const postPages: MetadataRoute.Sitemap = posts.map((post: any) => {
+    const lastModified = formatDate(post.updatedAt || post.createdAt);
+    const priority = post.view > 100 ? 0.8 : 0.7; // 조회수가 높은 게시물은 우선순위 높임
+
+    return {
+      url: `${domain}/post/${post.postId}`,
+      lastModified,
+      changeFrequency: 'weekly' as const,
+      priority
+    };
+  });
 
   return [...staticPages, ...postPages]
 }
