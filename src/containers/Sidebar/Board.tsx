@@ -1,6 +1,25 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
+// 서버에서 사용하던 getBoardDatelist 함수 클라이언트에 복사
+const getBoardDatelist = (date: any) => {
+  if (!date) {
+    return '';
+  }
+  const date1 = new Date();
+  const date2 = new Date(date);
+
+  const diffDate = date1.getTime() - date2.getTime();
+
+  if (diffDate > 1000 * 60 * 60 * 24 * 30 * 12) return `${Math.abs(Math.floor(diffDate / (1000 * 60 * 60 * 24 * 30 * 12)))}년 전`;
+  if (diffDate > 1000 * 60 * 60 * 24 * 30) return `${Math.abs(Math.floor(diffDate / (1000 * 60 * 60 * 24 * 30)))}개월 전`;
+  if (diffDate > 1000 * 60 * 60 * 24) return `${Math.abs(Math.floor(diffDate / (1000 * 60 * 60 * 24)))}일 전`;
+  if (diffDate > 1000 * 60 * 60) return `${Math.abs(Math.floor(diffDate / (1000 * 60 * 60)))}시간 전`;
+  if (diffDate > 1000 * 60) return `${Math.abs(Math.floor(diffDate / (1000 * 60)))}분 전`;
+  if (diffDate > 1000) return '방금 전';
+
+  return '방금 전';
+};
 
 interface IProps {
   name: string,
@@ -31,7 +50,7 @@ const Board = ({ name, count, date, route, color }: IProps): JSX.Element => {
           <span>{name}</span>
           {count !== 0 && <span>{count}</span>}
         </Name>
-        <DateStr>{date}</DateStr>
+        <DateStr>{date ? getBoardDatelist(date) : ''}</DateStr>
       </BoardLink>
     </Container>
   )

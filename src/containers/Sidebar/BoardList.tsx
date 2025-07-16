@@ -109,7 +109,7 @@ const BoardList = (): JSX.Element => {
               key={idx}
               name={i.name}
               count={i.count}
-              date={i.dateString}
+              date={i.date}
               route={i.name}
               color={getBoardColor(idx + 1)}
             />
