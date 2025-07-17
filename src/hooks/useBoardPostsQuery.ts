@@ -4,23 +4,23 @@ import { apiGet, apiPost } from '@/services/api';
 interface BoardPostsQueryParams {
   board?: string | null;
   search?: string | null;
+  page?: number;
+  limit?: number;
 }
 
-export const useBoardPostsQuery = ({ board, search }: BoardPostsQueryParams) => {
+export const useBoardPostsQuery = ({ board, search, page = 1, limit = 10 }: BoardPostsQueryParams) => {
   return useQuery({
-    queryKey: ['boardPosts', { board, search }],
+    queryKey: ['boardPosts', { board, search, page, limit }],
     queryFn: async () => {
       if (search) {
-        // 검색 API
         const res = await apiGet(`/api/blog/postList/search?q=${search}`);
         return res.data;
-      } 
-        // 게시판별 목록 API
-        const res = await apiPost('/api/blog/postList', { board: board === 'all' ? '' : board });
-        return res.data;
-      
+      }
+      const res = await apiPost('/api/blog/postList', { board: board === 'all' ? '' : board, page, limit });
+      return res.data;
+
     },
-    staleTime: 1000 * 60, // 1분
+    staleTime: 1000 * 60,
     enabled: true,
   });
 }; 

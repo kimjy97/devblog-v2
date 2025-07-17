@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Pretendard } from '../../../public/fonts';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PostInfo } from '@type/post';
 import Post from '@/components/Post';
 import Selection from '@containers/Selection';
@@ -10,8 +10,6 @@ import IconCaution from '@public/svgs/caution.svg';
 import IconArrowRight from '@public/svgs/arrow_right.svg';
 import IconTag from '@public/svgs/tag.svg';
 import IconSearch from '@public/svgs/search.svg';
-import { useRecoilValue } from 'recoil';
-import { postsByBoardState } from '@/atoms/post';
 import { IPost } from '@/models/Post';
 import MobileTagList from '@/containers/PostList/MobileTagList';
 import useAnimateOnStateChange from '@/hooks/useAnimatedOnStateChange';
@@ -20,9 +18,13 @@ interface PostListProps {
   data: any;
   isLoading: boolean;
   isError: boolean;
+  children?: React.ReactNode;
+  page?: number;
+  limit?: number;
+  total?: number;
 }
 
-const PostList = ({ data, isLoading, isError }: PostListProps): JSX.Element => {
+const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, total = 0 }: PostListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const board = searchParams.get('board');
   const search = searchParams.get('search');
@@ -114,7 +116,7 @@ const PostList = ({ data, isLoading, isError }: PostListProps): JSX.Element => {
           </BoardTitle>
           {filteredData &&
             <PostNumText>
-              {filteredData.length} posts
+              {`${filteredData.length} of ${total} posts`}
             </PostNumText>
           }
           <Line />
@@ -146,6 +148,8 @@ const PostList = ({ data, isLoading, isError }: PostListProps): JSX.Element => {
             ))}
           </PlaceholderPostListWrapper>
         }
+        {/* 페이지네이션 등 children을 게시글 목록 하단에 렌더링 */}
+        {children}
       </PostListContainer>
     </Container>
   )
@@ -160,15 +164,16 @@ const Container = styled.div`
   flex-direction: column;
 `
 const PostListContainer = styled.div`
+  flex: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 12.5rem;
   
   transition: background-color 150ms;
 `
 const PostListWrapper = styled.ul`
+  flex: 1;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

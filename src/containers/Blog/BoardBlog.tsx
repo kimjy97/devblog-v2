@@ -4,9 +4,10 @@ import PostList from '@/containers/PostList/PostList';
 import TagList from '@/containers/PostList/TagList';
 import { useBoardPostsQuery } from '@/hooks/useBoardPostsQuery';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled, { css } from 'styled-components';
+import Pagination from '@/components/Pagination';
 
 const BoardBlog = (): JSX.Element => {
   const searchParams = useSearchParams();
@@ -15,12 +16,27 @@ const BoardBlog = (): JSX.Element => {
   const isPageLoading = useRecoilValue(pageLoadingState);
   const className = `${!isPageLoading ? 'visible' : ''}`
 
-  // react-query로 게시글/태그 fetch
-  const { data, isLoading, isError } = useBoardPostsQuery({ board, search });
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading, isError } = useBoardPostsQuery({ board, search, page, limit });
+
+  const total = data?.total || 0;
+  const totalPages = Math.ceil(total / limit);
+
+  useEffect(() => {
+    setPage(1);
+  }, [board, search]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [page]);
 
   return (
     <Container className={className}>
-      <PostList data={data} isLoading={isLoading} isError={isError} />
+      <PostList data={data} isLoading={isLoading} isError={isError} page={page} limit={limit} total={total}>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      </PostList>
       <TagList tags={data?.tags} posts={data?.posts} />
     </Container>
   )
