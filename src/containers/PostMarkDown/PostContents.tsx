@@ -1,12 +1,12 @@
-import { postInfoState } from '@/atoms/post';
 import PostMarkdownViewer from '@/components/Markdown/PostMarkdownViewer';
 import { shimmer } from '@/styles/animation';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const PostContents = (): JSX.Element => {
-  const postInfo = useRecoilValue(postInfoState);
+interface PostContentsProps {
+  postInfo?: any;
+}
 
+const PostContents = ({ postInfo }: PostContentsProps): JSX.Element => {
   return (
     <Container>
       {postInfo ?

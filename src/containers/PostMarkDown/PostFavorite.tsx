@@ -1,14 +1,15 @@
 import styled, { keyframes } from 'styled-components';
 import { useEffect, useState } from 'react';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import { useRecoilValue } from 'recoil';
-import { postInfoState } from '@/atoms/post';
 import { apiDelete, apiGet, apiPost } from '@/services/api';
 
-const PostFavorite = (): JSX.Element | null => {
+interface PostFavoriteProps {
+  postInfo?: any;
+}
+
+const PostFavorite = ({ postInfo }: PostFavoriteProps): JSX.Element | null => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const postInfo = useRecoilValue(postInfoState);
   const { ref, isIntersecting } = useIntersectionObserver({
     root: null,
     rootMargin: '0px',
@@ -21,7 +22,6 @@ const PostFavorite = (): JSX.Element | null => {
     if (postInfo) {
       setIsDisabled(true);
       if (isFavorite) {
-        // 좋아요 취소
         setIsFavorite(false);
         apiDelete('/api/blog/post/favorite', { postId: postInfo.postId })
           .then(() => {
@@ -31,7 +31,6 @@ const PostFavorite = (): JSX.Element | null => {
             setIsFavorite(true);
           });
       } else {
-        // 좋아요 추가
         setIsFavorite(true);
         apiPost('/api/blog/post/favorite', { postId: postInfo.postId })
           .then(() => {

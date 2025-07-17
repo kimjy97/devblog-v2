@@ -1,13 +1,12 @@
 'use client';
 
-import { postInfoState } from '@/atoms/post';
 import PostComment from '@/containers/PostMarkDown/PostComment';
 import PostContents from '@/containers/PostMarkDown/PostContents';
 import PostFavorite from '@/containers/PostMarkDown/PostFavorite';
 import PostTags from '@/containers/PostMarkDown/PostTags';
 import PostTitle from '@/containers/PostMarkDown/PostTitle';
 import { useLayout } from '@/hooks/useLayout';
-import { apiGet } from '@/services/api';
+import { usePostInfoQuery } from '@/hooks/usePostInfoQuery';
 import { Pretendard } from '@public/fonts';
 import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
@@ -20,30 +19,40 @@ interface Props {
 }
 
 const PostPageClient = ({ params }: Props): JSX.Element => {
-  const [, setPostInfo] = useRecoilState(postInfoState);
   useLayout();
+  const { data: postInfo, isLoading, isError } = usePostInfoQuery(params.id);
 
-  const getPostInfo = async () => {
-    const result = await apiGet('/api/blog/post', {
-      params: { id: params.id }
-    }).then(res => res.post);
-
-    setPostInfo(result);
-  };
-
-  useEffect(() => {
-    setPostInfo(undefined);
-    setTimeout(() => getPostInfo(), 0);
-  }, [params]);
+  if (isLoading) {
+    return (
+      <Container className={Pretendard.className}>
+        <Wrapper>
+          <PostTitle postInfo={undefined} />
+          <PostTags postInfo={undefined} />
+          <PostContents postInfo={undefined} />
+          <PostFavorite postInfo={undefined} />
+          <PostComment postInfo={undefined} />
+        </Wrapper>
+      </Container>
+    );
+  }
+  if (isError || !postInfo) {
+    return (
+      <Container className={Pretendard.className}>
+        <Wrapper>
+          <div>게시글을 불러오는 중 오류가 발생했습니다.</div>
+        </Wrapper>
+      </Container>
+    );
+  }
 
   return (
     <Container className={Pretendard.className}>
       <Wrapper>
-        <PostTitle />
-        <PostTags />
-        <PostContents />
-        <PostFavorite />
-        <PostComment />
+        <PostTitle postInfo={postInfo} />
+        <PostTags postInfo={postInfo} />
+        <PostContents postInfo={postInfo} />
+        <PostFavorite postInfo={postInfo} />
+        <PostComment postInfo={postInfo} />
       </Wrapper>
     </Container>
   );

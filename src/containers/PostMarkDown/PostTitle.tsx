@@ -1,12 +1,13 @@
-import { postInfoState } from '@/atoms/post';
 import { shimmer } from '@/styles/animation';
 import moment from 'moment-timezone';
 import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const PostTitle = React.memo((): JSX.Element => {
-  const postInfo = useRecoilValue(postInfoState);
+interface PostTitleProps {
+  postInfo?: any;
+}
+
+const PostTitle = React.memo(({ postInfo }: PostTitleProps): JSX.Element => {
   const [, setCachedPostInfo] = useState(postInfo);
 
   useEffect(() => {

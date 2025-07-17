@@ -1,13 +1,14 @@
-import { postInfoState } from '@/atoms/post';
 import Comment from '@/containers/PostMarkDown/Comment';
 import CommentForm from '@/containers/PostMarkDown/Comment/CommentForm';
 import { apiGet } from '@/services/api';
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const PostComment = (): JSX.Element | null => {
-  const postInfo = useRecoilValue(postInfoState);
+interface PostCommentProps {
+  postInfo?: any;
+}
+
+const PostComment = ({ postInfo }: PostCommentProps): JSX.Element | null => {
   const [comments, setComments] = useState<any>([]);
 
   const getCommentData = async () => {

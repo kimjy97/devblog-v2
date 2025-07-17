@@ -1,12 +1,12 @@
-import { postInfoState } from '@/atoms/post';
 import { shimmer } from '@/styles/animation';
 import Link from 'next/link';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const PostTags = (): JSX.Element => {
-  const postInfo = useRecoilValue(postInfoState);
+interface PostTagsProps {
+  postInfo?: any;
+}
 
+const PostTags = ({ postInfo }: PostTagsProps): JSX.Element => {
   return (
     <Container>
       {postInfo ?
