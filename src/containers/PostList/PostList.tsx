@@ -16,11 +16,16 @@ import { IPost } from '@/models/Post';
 import MobileTagList from '@/containers/PostList/MobileTagList';
 import useAnimateOnStateChange from '@/hooks/useAnimatedOnStateChange';
 
-const PostList = (): JSX.Element => {
+interface PostListProps {
+  data: any;
+  isLoading: boolean;
+  isError: boolean;
+}
+
+const PostList = ({ data, isLoading, isError }: PostListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const board = searchParams.get('board');
   const search = searchParams.get('search');
-  const data: any = useRecoilValue(postsByBoardState);
   const [tag, setTag] = useState(searchParams.get('tag'));
   const [filteredData, setFilteredData] = useState<PostInfo[] | undefined>(undefined);
   const [postType, setPostType] = useState<string>('최신순');
@@ -36,13 +41,12 @@ const PostList = (): JSX.Element => {
   }
 
   const getFilteredData = async () => {
+    if (!data || !data.posts) return setFilteredData([]);
     const arr = [...data.posts];
-
     // 태그 적용
     const filtered = arr.filter((i: IPost) =>
       tag && tag !== 'all' ? i.tags.includes(tag) : true)
       .reverse();
-
     // 정렬 적용
     switch (postType) {
       case '인기순':
@@ -63,7 +67,6 @@ const PostList = (): JSX.Element => {
       default:
         break;
     }
-
     setFilteredData(filtered);
   }
 
@@ -81,6 +84,20 @@ const PostList = (): JSX.Element => {
     setTag(searchParams.get('tag'));
   }, [searchParams]);
 
+  if (isLoading) {
+    return (
+      <PlaceholderPostListWrapper>
+        {Array.from({ length: 12 }).map((i: any, idx: number) => (
+          <PlaceholderPost key={idx}>
+            <div /><div /><div /><div /><div /><div />
+          </PlaceholderPost>
+        ))}
+      </PlaceholderPostListWrapper>
+    );
+  }
+  if (isError) {
+    return <NoList>게시글을 불러오는 중 오류가 발생했습니다.</NoList>;
+  }
   return (
     <Container className={Pretendard.className}>
       <PostListContainer>
@@ -109,7 +126,7 @@ const PostList = (): JSX.Element => {
             align='right'
           />
         </OptionWrapper>
-        <MobileTagList />
+        <MobileTagList tags={data?.tags} posts={data?.posts} />
         {filteredData ? filteredData.length > 0 ?
           <PostListWrapper>
             {filteredData.map((i: PostInfo, idx: number) =>

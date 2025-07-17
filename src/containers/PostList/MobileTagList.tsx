@@ -1,27 +1,16 @@
-import { postsByBoardState } from '@/atoms/post';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const MobileTagList = (): JSX.Element => {
+interface MobileTagListProps {
+  tags?: any[];
+  posts?: any[];
+}
+
+const MobileTagList = ({ tags, posts }: MobileTagListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const currentQuery = Object.fromEntries(searchParams.entries());
-  const data = useRecoilValue<any>(postsByBoardState);
-  const [tagList, setTagList] = useState<any[] | undefined>(undefined);
-
-  const getData = () => {
-    if (data) {
-      setTagList(data.tags);
-    }
-  }
-
-  useEffect(() => {
-    if (data) {
-      getData();
-    }
-  }, [data]);
 
   return (
     <Container>
@@ -38,9 +27,9 @@ const MobileTagList = (): JSX.Element => {
           replace
         >
           <p>전체</p>
-          <span>{data && data.posts.length}</span>
+          <span>{posts?.length ?? 0}</span>
         </TagItem>
-        {tagList && tagList.length > 0 && tagList.slice(0, 20).sort((a, b) => b.count - a.count).map((i: any, idx: number) =>
+        {tags && tags.length > 0 && tags.slice(0, 20).sort((a, b) => b.count - a.count).map((i: any, idx: number) =>
           <TagItem
             key={idx}
             className={currentQuery.tag === i.name ? 'active' : ''}

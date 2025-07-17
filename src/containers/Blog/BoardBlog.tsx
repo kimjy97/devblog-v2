@@ -1,12 +1,11 @@
 import { pageLoadingState } from '@/atoms/pageLoading';
-import { postsByBoardState } from '@/atoms/post';
 import { INDEX_MAIN } from '@/constants/zIndex';
 import PostList from '@/containers/PostList/PostList';
 import TagList from '@/containers/PostList/TagList';
-import { apiGet, apiPost } from '@/services/api';
+import { useBoardPostsQuery } from '@/hooks/useBoardPostsQuery';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import styled, { css } from 'styled-components';
 
 const BoardBlog = (): JSX.Element => {
@@ -14,39 +13,15 @@ const BoardBlog = (): JSX.Element => {
   const board = searchParams.get('board');
   const search = searchParams.get('search');
   const isPageLoading = useRecoilValue(pageLoadingState);
-  const [, setData] = useRecoilState(postsByBoardState);
   const className = `${!isPageLoading ? 'visible' : ''}`
 
-  const getBoardName = (bool?: boolean) => {
-    let boardName = board;
-    if (board === 'all') boardName = bool ? '전체글보기' : '';
-
-    return boardName;
-  }
-
-  const getData = async () => {
-    if (search) {
-      const data = await apiGet(`/api/blog/postList/search?q=${search}`)
-        .then((res) => res.data)
-        .catch();
-      setData(data);
-    } else {
-      const data = await apiPost('/api/blog/postList', { board: getBoardName(false) })
-        .then((res) => res.data)
-        .catch();
-
-      setData(data);
-    }
-  }
-
-  useEffect(() => {
-    getData();
-  }, [search, board]);
+  // react-query로 게시글/태그 fetch
+  const { data, isLoading, isError } = useBoardPostsQuery({ board, search });
 
   return (
     <Container className={className}>
-      <PostList />
-      <TagList />
+      <PostList data={data} isLoading={isLoading} isError={isError} />
+      <TagList tags={data?.tags} posts={data?.posts} />
     </Container>
   )
 };

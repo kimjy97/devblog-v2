@@ -1,27 +1,17 @@
-import { postsByBoardState } from '@/atoms/post';
 import Link from 'next/link';
 import IconSharp from '@public/svgs/sharp.svg';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-const TagList = (): JSX.Element => {
+interface TagListProps {
+  tags?: any[];
+  posts?: any[];
+}
+
+const TagList = ({ tags, posts }: TagListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const currentQuery = Object.fromEntries(searchParams.entries());
-  const data = useRecoilValue<any>(postsByBoardState);
-  const [tagList, setTagList] = useState<any[] | undefined>(undefined);
-
-  const getData = () => {
-    setTagList(data.tags);
-  }
-
-  useEffect(() => {
-    if (data) {
-      getData();
-    }
-  }, [data]);
-
 
   return (
     <Container>
@@ -42,9 +32,9 @@ const TagList = (): JSX.Element => {
           replace
         >
           <p>전체</p>
-          <span>{data && data.posts.length}</span>
+          <span>{posts?.length ?? 0}</span>
         </TagItem>
-        {tagList && tagList.length > 0 && tagList.slice(0, 20).sort((a, b) => b.count - a.count).map((i: any, idx: number) =>
+        {tags && tags.length > 0 && tags.slice(0, 20).sort((a, b) => b.count - a.count).map((i: any, idx: number) =>
           <TagItem
             key={idx}
             className={currentQuery.tag === i.name ? 'active' : ''}

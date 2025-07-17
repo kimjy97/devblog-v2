@@ -8,20 +8,16 @@ import Selection from '@containers/Selection';
 import IconArrowRight from '@public/svgs/arrow_right.svg'
 import Link from 'next/link';
 import PlaceholderPost from '@/containers/PostList/PlaceholderPost';
+import { useBoardPostsQuery } from '@/hooks/useBoardPostsQuery';
 
 const PopularPostList = (): JSX.Element => {
-  const [DATA, setDATA] = useState<PostInfo[]>([]);
   const [postType, setPostType] = useState<string>('최근 게시물');
-
   const postTypeArr = ['최근 게시물', '인기 게시물', '많이 찾아본 게시물', '도움이 된 게시물'];
 
-  const getData = async () => {
-    const data: PostInfo[] = await apiPost('/api/blog/postList', {}).then((res) => res.data.posts);
-    const reversedData = data.reverse() ?? [];
-    const sortedData = sortPosts(postType, reversedData);
-    setDATA(sortedData);
-  };
+  // 전체 게시글 목록 가져오기
+  const { data, isLoading, isError } = useBoardPostsQuery({ board: 'all' });
 
+  // 정렬 함수
   const sortPosts = (type: string, posts: PostInfo[]): PostInfo[] => {
     const result = [...posts];
     switch (type) {
@@ -53,13 +49,10 @@ const PopularPostList = (): JSX.Element => {
     return result;
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  useEffect(() => {
-    setDATA((prev) => sortPosts(postType, prev));
-  }, [postType]);
+  let sortedPosts: PostInfo[] = [];
+  if (data && data.posts) {
+    sortedPosts = sortPosts(postType, data.posts);
+  }
 
   return (
     <Container className={Pretendard.className} id='fade_3'>
@@ -75,15 +68,19 @@ const PopularPostList = (): JSX.Element => {
           <ArrowRightIcon />
         </More>
       </Title>
-      {DATA.length > 0 ?
+      {isLoading ? (
+        <PlaceholderPost />
+      ) : isError ? (
+        <div>게시글을 불러오는 중 오류가 발생했습니다.</div>
+      ) : sortedPosts.length > 0 ? (
         <PostListWrapper>
-          {DATA.slice(0, 6).map((i: PostInfo, idx: number) =>
+          {sortedPosts.slice(0, 6).map((i: PostInfo, idx: number) =>
             <Post data={i} key={idx} />
           )}
         </PostListWrapper>
-        :
+      ) : (
         <PlaceholderPost />
-      }
+      )}
     </Container>
   )
 };

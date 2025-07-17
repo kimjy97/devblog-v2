@@ -16,6 +16,7 @@ import ClientWrapper from "@/containers/ClientWrapper";
 import RouteLoading from "@/containers/RouteLoading";
 import { defaultMeta } from "@/constants/meta";
 import { Suspense } from "react";
+import QueryProvider from '@/containers/QueryProvider';
 
 export const metadata: Metadata = {
   title: defaultMeta.title,
@@ -118,21 +119,23 @@ const RootLayout = ({
         <Script id="client-side-code" dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />
         <Suspense>
           <RecoilRootWrapper>
-            <StyledComponentsRegistry>
-              <ClientWrapper>
-                <ScrollToTop />
-                <Contents>
-                  <Sidebar />
-                  {children}
-                </Contents>
-                <Header />
-                <FixedButton />
-                <Modals />
-                <Toast />
-                <RouteLoading />
-                <PageLoading />
-              </ClientWrapper>
-            </StyledComponentsRegistry>
+            <QueryProvider>
+              <StyledComponentsRegistry>
+                <ClientWrapper>
+                  <ScrollToTop />
+                  <Contents>
+                    <Sidebar />
+                    {children}
+                  </Contents>
+                  <Header />
+                  <FixedButton />
+                  <Modals />
+                  <Toast />
+                  <RouteLoading />
+                  <PageLoading />
+                </ClientWrapper>
+              </StyledComponentsRegistry>
+            </QueryProvider>
           </RecoilRootWrapper>
           <Script id="dev-tool-detector" strategy="afterInteractive">
             {devToolBlock}
