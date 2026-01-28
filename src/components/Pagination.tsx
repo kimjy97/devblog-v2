@@ -39,7 +39,7 @@ const PaginationWrapper = styled.div`
   gap: 12px;
   justify-content: center;
   align-items: center;
-  margin: 4rem 0 2rem 0;
+  margin: 8rem 0 2rem 0;
   
   button {
     padding: 0.5rem 0.75rem;

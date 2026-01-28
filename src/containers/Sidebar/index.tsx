@@ -136,7 +136,7 @@ const StickyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: calc(100vh - 136px);
+  height: calc(100vh - 136px);
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 `

@@ -6,15 +6,29 @@ export async function POST(req: NextRequest) {
   await dbConnect();
 
   const passedValue = await new Response(req.body).text();
-  const { board, page = 1, limit = 10 } = JSON.parse(passedValue);
+  const { board, page = 1, limit = 10, sort = 'latest' } = JSON.parse(passedValue);
 
   const query = board
     ? { postId: { $ne: 0 }, 'tags.0': board, status: true }
     : { postId: { $ne: 0 }, status: true };
 
   const total = await Post.countDocuments(query);
+  let sortOption = {};
+  switch (sort) {
+    case 'popular':
+      sortOption = { like: -1, cmtnum: -1, view: 1 };
+      break;
+    case 'comments':
+      sortOption = { cmtnum: -1 };
+      break;
+    case 'latest':
+    default:
+      sortOption = { createdAt: -1 };
+      break;
+  }
+
   const posts = await Post.find(query)
-    .sort({ postId: 1 })
+    .sort(sortOption)
     .skip((page - 1) * limit)
     .limit(limit);
 

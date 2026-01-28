@@ -136,6 +136,25 @@ const Container = styled.ul`
   margin-top: 20px;
   padding: 0 10px;
   padding-bottom: 40px;
+
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 18px;
+  }
+  &::-webkit-scrollbar-thumb {
+    outline: none;
+    border-radius: 10px;
+    border: 6px solid transparent;
+    box-shadow: inset 6px 6px 0 var(--bg-sb);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    box-shadow: inset 6px 6px 0 var(--bg-sb-hover);
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: var(--bg-sidebar);
+  }
 `
 const PlaceholderWrapper = styled.div`
   display: flex;

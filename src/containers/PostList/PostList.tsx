@@ -22,14 +22,14 @@ interface PostListProps {
   page?: number;
   limit?: number;
   total?: number;
+  onSortChange?: (sortType: string) => void;
 }
 
-const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, total = 0 }: PostListProps): JSX.Element => {
+const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, total = 0, onSortChange }: PostListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const board = searchParams.get('board');
   const search = searchParams.get('search');
   const [tag, setTag] = useState(searchParams.get('tag'));
-  const [filteredData, setFilteredData] = useState<PostInfo[] | undefined>(undefined);
   const [postType, setPostType] = useState<string>('최신순');
   const breadCrumbsRef = useAnimateOnStateChange(tag, 'fadeIn');
 
@@ -42,41 +42,14 @@ const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, to
     return boardName;
   }
 
-  const getFilteredData = async () => {
-    if (!data || !data.posts) return setFilteredData([]);
+  const getFilteredData = () => {
+    if (!data || !data.posts) return [];
     const arr = [...data.posts];
     // 태그 적용
     const filtered = arr.filter((i: IPost) =>
-      tag && tag !== 'all' ? i.tags.includes(tag) : true)
-      .reverse();
-    // 정렬 적용
-    switch (postType) {
-      case '인기순':
-        filtered.sort((a: PostInfo, b: PostInfo) => {
-          const aScore = a.like + a.cmtnum;
-          const bScore = b.like + b.cmtnum;
-          if (aScore === 0) return 1;
-          if (bScore === 0) return -1;
-          return (bScore / b.view) - (aScore / a.view);
-        });
-        break;
-      case '최신순':
-        filtered.sort((a: IPost, b: IPost) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      case '댓글순':
-        filtered.sort((a: PostInfo, b: PostInfo) => b.cmtnum - a.cmtnum);
-        break;
-      default:
-        break;
-    }
-    setFilteredData(filtered);
+      tag && tag !== 'all' ? i.tags.includes(tag) : true);
+    return filtered;
   }
-
-  useEffect(() => {
-    if (data) {
-      getFilteredData();
-    }
-  }, [data, tag, postType]);
 
   useEffect(() => {
     setPostType('최신순');
@@ -86,17 +59,6 @@ const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, to
     setTag(searchParams.get('tag'));
   }, [searchParams]);
 
-  if (isLoading) {
-    return (
-      <PlaceholderPostListWrapper>
-        {Array.from({ length: 12 }).map((i: any, idx: number) => (
-          <PlaceholderPost key={idx}>
-            <div /><div /><div /><div /><div /><div />
-          </PlaceholderPost>
-        ))}
-      </PlaceholderPostListWrapper>
-    );
-  }
   if (isError) {
     return <NoList>게시글을 불러오는 중 오류가 발생했습니다.</NoList>;
   }
@@ -114,24 +76,29 @@ const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, to
               </BreadCrumbs>
             }
           </BoardTitle>
-          {filteredData &&
+          {data?.posts &&
             <PostNumText>
-              {`${filteredData.length} of ${total} posts`}
+              {`${getFilteredData().length} of ${total} posts`}
             </PostNumText>
           }
           <Line />
           <Selection
             value={postType}
             items={postTypeArr}
-            onChange={(e: any) => setPostType(e.value)}
+            onChange={(e: any) => {
+              setPostType(e.value);
+              if (onSortChange) {
+                onSortChange(e.value);
+              }
+            }}
             border
             align='right'
           />
         </OptionWrapper>
         <MobileTagList tags={data?.tags} posts={data?.posts} />
-        {filteredData ? filteredData.length > 0 ?
+        {data?.posts && !isLoading ? getFilteredData().length > 0 ?
           <PostListWrapper>
-            {filteredData.map((i: PostInfo, idx: number) =>
+            {getFilteredData().map((i: PostInfo, idx: number) =>
               <Post data={i} key={idx} />
             )}
           </PostListWrapper> :
@@ -173,7 +140,6 @@ const PostListContainer = styled.div`
   transition: background-color 150ms;
 `
 const PostListWrapper = styled.ul`
-  flex: 1;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -183,6 +149,10 @@ const PostListWrapper = styled.ul`
   opacity: 0;
 
   animation: fadeInAni 700ms forwards;
+
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
   @media (max-width: 1454px) {
     width: 100%;
@@ -233,9 +203,7 @@ const OptionWrapper = styled.div`
   gap: 1.5rem;
   width: 100%;
   padding-bottom: 1.125rem;
-  margin-bottom: 1.5rem;
-
-  border-bottom: 1px solid var(--bg-line);
+  margin-bottom: 0.25rem;
 
   color: var(--text-normal);
   font-size: 1rem;

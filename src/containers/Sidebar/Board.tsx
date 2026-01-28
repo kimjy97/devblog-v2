@@ -60,6 +60,7 @@ export default Board;
 const Container = styled.div`
   position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   width: 100%;
   

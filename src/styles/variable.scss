@@ -47,9 +47,10 @@ html[data-theme="light"] {
   --bg-sidebar-input-focus: rgb(220, 220, 220);
   --bg-sidebar-profile-boxshadow: 0px 0px 22px rgba(0, 0, 0, 0.4);
   --bg-sidebar-profile-boxshadow-zoom: 0px 0px 16px rgba(0, 0, 0, 0.3);
-  --bg-tag: #f3f3f8;
+  --bg-tag: #ffffff;
   --bg-tag-hover: #eeeef5;
   --bg-tag-active: #e9e8f9;
+  --bg-tag-active-border: #bbb8dd;
   --bg-pitem: rgb(255, 255, 255);
   --bg-pitem-border: 1px solid #e3e3ec;
   --bg-pitem-boxshadow: 0 0 12px #0000000f;
@@ -183,7 +184,7 @@ html[data-theme="light"] {
   --bg-modal-input-focus-border: #c0c0cc;
   --bg-post-placeholder: #9494b021;
   --bg-post-placeholder-shimmer: rgba(0, 0, 20, 0.05);
-  --bg-line: #efeff4;
+  --bg-line: #dbdbe3;
   --bg-favorite: #ffffff;
   --bg-favorite-shadow: 0 0 28px #00000010;
   --bg-favorite-shadow-active: 0 0 42px #ff666636;
@@ -303,7 +304,8 @@ html[data-theme="dark"] {
   --bg-sidebar-profile-boxshadow-zoom: 0px 0px 22px rgba(0, 0, 0, 0.8);
   --bg-tag: #2b2b3b;
   --bg-tag-hover: #35354c;
-  --bg-tag-active: rgba(100, 100, 170, 0.7);
+  --bg-tag-active: #6464aab3;
+  --bg-tag-active-border: rgb(119, 119, 187);
   --bg-pitem: rgb(37, 40, 49);
   --bg-pitem-hover: #272a33;
   --bg-pitem-border: 1px solid #32323b;
@@ -486,7 +488,7 @@ html[data-theme="dark"] {
   --text-selection-list-selected: rgb(249, 255, 164);
   --text-modal-input-placeholder: rgb(139, 139, 154);
   --text-kebab-red: rgb(244, 121, 121);
-  --text-search-highlight: #6a40ff;
+  --text-search-highlight: #ad9bed;
   // Scrollbar //
   --bg-sb: rgba(174, 189, 220, 0.14);
   --bg-sb-hover: rgba(200, 220, 225, 0.3);

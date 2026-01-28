@@ -119,6 +119,7 @@ const TagItem = styled(Link)`
 
   &.active {
     background-color: var(--bg-tag-active);
+    border-color: var(--bg-tag-active-border);
   }
   &:not(.active):hover {
     background-color: var(--bg-tag-hover);

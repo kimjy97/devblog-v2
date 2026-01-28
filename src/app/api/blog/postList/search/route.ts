@@ -9,9 +9,24 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get('q');
+    const sort = searchParams.get('sort') || 'latest';
 
     if (!query) {
       return ResponseError(400, "Query parameter 'q' is required");
+    }
+
+    let sortOption = {};
+    switch (sort) {
+      case 'popular':
+        sortOption = { like: -1, cmtnum: -1, view: 1 };
+        break;
+      case 'comments':
+        sortOption = { cmtnum: -1 };
+        break;
+      case 'latest':
+      default:
+        sortOption = { createdAt: -1 };
+        break;
     }
 
     const posts = await Post.find({
@@ -20,7 +35,7 @@ export async function GET(request: NextRequest) {
         { title: { $regex: query, $options: 'i' } },
         { content: { $regex: `${query.length >= 3 ? query : '(?=a)b'}`, $options: 'i' } }
       ]
-    }).sort({ postId: 1 });
+    }).sort(sortOption);
 
     // 태그 카운트 계산
     const tagCounts = posts.reduce((acc, post) => {

@@ -40,10 +40,11 @@ const Post = ({ data }: IProps): JSX.Element => {
           </PostInfoWrapper>
         </PostInfoList>
       </ThumbnailWrapper>
-      <BoardName>{data.tags[0]}</BoardName>
-      <Title>{data.title}</Title>
-      <TagListWrapper id='tag'>
-        {/*
+      <ContentWrapper>
+        <BoardName>{data.tags[0]}</BoardName>
+        <Title>{data.title}</Title>
+        <TagListWrapper id='tag'>
+          {/*
           <TagList>
           {data.tags.map((t: any, idx2: number) =>
             idx2 !== 0 &&
@@ -53,11 +54,12 @@ const Post = ({ data }: IProps): JSX.Element => {
           )}
         </TagList>
           */}
-      </TagListWrapper>
-      <UploadInfoWrapper>
-        <UploadInfo>{data.name}</UploadInfo>
-        <UploadInfo>{moment(data.createdAt).format('YYYY. MM. DD')}</UploadInfo>
-      </UploadInfoWrapper>
+        </TagListWrapper>
+        <UploadInfoWrapper>
+          <UploadInfo>{data.name}</UploadInfo>
+          <UploadInfo>{moment(data.createdAt).format('YYYY. MM. DD')}</UploadInfo>
+        </UploadInfoWrapper>
+      </ContentWrapper>
     </Container>
   )
 };
@@ -69,19 +71,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  min-height: 280px;
-  max-height: 340px;
   width: 100%;
-  aspect-ratio: 100/100;
   
   background-color: var(--bg-pitem);
   border: var(--bg-pitem-border);
   border-radius: 12px;
-  //box-shadow: var(--bg-pitem-boxshadow);
   box-sizing: border-box;
   overflow: hidden;
 
-  transition: box-shadow 150ms ease-out, background-color 150ms ease-out, border 150ms;
   cursor: default;
 
   &>a {
@@ -115,7 +112,6 @@ const Container = styled.div`
 const ThumbnailWrapper = styled.div`
   position: relative;
   width: 100%;
-  max-height: 210px;
   aspect-ratio: 8/5;
 
   overflow: hidden;
@@ -150,6 +146,14 @@ const InfoNum = styled.p`
 
   transition: color 150ms;
 `
+const ContentWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+`
 const BoardName = styled.span`
   position: relative;
   padding: 0 12px;
@@ -169,6 +173,8 @@ const Title = styled.p`
   position: relative;
   padding: 0px 12px;
   margin-top: 6px;
+  margin-bottom: 20px;
+  height: 2.32rem;
   
   display: -webkit-box;
   -webkit-box-orient: vertical;

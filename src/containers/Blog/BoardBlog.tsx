@@ -17,9 +17,10 @@ const BoardBlog = (): JSX.Element => {
   const className = `${!isPageLoading ? 'visible' : ''}`
 
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const limit = 14;
+  const [sort, setSort] = useState('latest');
 
-  const { data, isLoading, isError } = useBoardPostsQuery({ board, search, page, limit });
+  const { data, isLoading, isError } = useBoardPostsQuery({ board, search, page, limit, sort });
 
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
@@ -28,13 +29,32 @@ const BoardBlog = (): JSX.Element => {
     setPage(1);
   }, [board, search]);
 
+  const handleSortChange = (sortType: string) => {
+    let sortParam = 'latest';
+    switch (sortType) {
+      case '최신순':
+        sortParam = 'latest';
+        break;
+      case '인기순':
+        sortParam = 'popular';
+        break;
+      case '댓글순':
+        sortParam = 'comments';
+        break;
+      default:
+        sortParam = 'latest';
+        break;
+    }
+    setSort(sortParam);
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [page]);
 
   return (
     <Container className={className}>
-      <PostList data={data} isLoading={isLoading} isError={isError} page={page} limit={limit} total={total}>
+      <PostList data={data} isLoading={isLoading} isError={isError} page={page} limit={limit} total={total} onSortChange={handleSortChange}>
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </PostList>
       <TagList tags={data?.tags} posts={data?.posts} />
@@ -70,18 +90,14 @@ const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 2.25rem;
   min-height: 100%;
   margin-left: 0.5rem;
   margin-right: 1rem;
   padding-inline-end: 16px;
-  padding: 1.5rem;
+  padding: 0 1.5rem;
   margin-top: calc(var(--sidebar-top) + 0px);
   margin-bottom: 1rem;
-
-  border-radius: 16px;
-  background-color: var(--bg-sidebar);
-  filter: var(--bg-sidebar-shadow);
 
   will-change: transform;
   transition: 150ms;
