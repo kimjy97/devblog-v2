@@ -6,19 +6,13 @@ import {
 } from "@/atoms/chatAI";
 import {
   modelArr,
-  msgSliceNum,
-  safetySettings,
 } from "@/constants/chat";
-import { apiPost } from "@/services/api";
-import { IChatArray, IChatContents, IChatContentsType } from "@/types/chat";
+import { IChatArray, IChatContents } from "@/types/chat";
 import {
-  getToken,
   removeTrailingNewlines,
   saveChatFull,
-  transformContetnsArr,
-  usingToken,
 } from "@/utils/chat";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { sendMessageStream, generateChatTitle } from "@/utils/openrouter";
 import { useEffect, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -47,89 +41,43 @@ export const useResponseChat = () => {
 
     if (storage) {
       const parsedStorage = JSON.parse(storage);
-      setChatArr(parsedStorage.length > 0 ? parsedStorage : [defaultChatContents]);
+      // attachedFiles가 올바른 형식인지 검증하고, 그렇지 않은 경우 제거
+      const validatedStorage = parsedStorage.map((chat: IChatArray) => {
+        return {
+          ...chat,
+          chatContents: chat.chatContents.map(content => {
+            // attachedFiles가 배열이고 각 항목이 uri와 name 속성을 가진 객체인지 확인
+            if (content.attachedFiles && Array.isArray(content.attachedFiles)) {
+              const validAttachedFiles = content.attachedFiles.filter(file =>
+                file && typeof file === 'object' &&
+                typeof file.uri === 'string' &&
+                typeof file.name === 'string'
+              );
+              return { ...content, attachedFiles: validAttachedFiles };
+            }
+            return content;
+          })
+        };
+      });
+      setChatArr(validatedStorage.length > 0 ? validatedStorage : [defaultChatContents]);
     } else {
       setChatArr([defaultChatContents]);
     }
   };
 
-  const addUserMessage = () => {
-    const attachedFilesArr: any[] = [];
-    requestPrompt.slice(1).forEach((i: any) => {
-      attachedFilesArr.push(i.origin);
-    });
-
-    const newChatContents: IChatContents[] = [
-      {
-        role: "user",
-        contents: requestPrompt[0],
-        attachedFiles: attachedFilesArr,
-        done: false,
-      },
-      {
-        role: "assistant",
-        contents: [],
-        done: false,
-      },
-    ];
-    newChatContents.unshift(...getCurrentChat(chatArr).chatContents);
-
-    const newChatArr = chatArr.map((chat) =>
-      chat.chatId === currentChatId
-        ? { ...chat, chatContents: newChatContents, chatDate: new Date() }
-        : chat
-    );
-
-    setChatArr(newChatArr);
-
-    try {
-      handleRequest(newChatArr);
-    } catch (error: any) {
-      if (error.status === 500) handleRequest(newChatArr);
-    }
-  };
-
-  const serverLog = async (usedToken: number, error?: boolean) => {
-    await apiPost("/api/log/chat", {
-      chat: requestPrompt[0],
-      totalToken: getToken(modelName),
-      usedToken,
-      error,
-    });
-  };
-
-  const handleNewChatArr = (
-    arr: IChatArray[],
-    ct: IChatContentsType,
-    complete: boolean
-  ) => {
+  const handleNewChatArr = (arr: IChatArray[], ct: string, loading: boolean) => {
     const newCurrentChat: IChatArray = getCurrentChat(arr);
+    const userMessageIndex = newCurrentChat.chatContents.length - 2;
+    const assistantMessageIndex = newCurrentChat.chatContents.length - 1;
 
-    const attachedFilesArr: any[] = [];
-    if (Array.isArray(requestPrompt)) {
-      requestPrompt.slice(1).forEach((i: any) => {
-        attachedFilesArr.push(i.origin);
-      });
-    }
+    const textContent = typeof requestPrompt[0] === 'string' ? requestPrompt[0] : '';
+    const attachedFiles: any[] = requestPrompt.filter((item: any) => typeof item !== 'string');
+    const userMessage = { ...newCurrentChat.chatContents[userMessageIndex], contents: textContent, attachedFiles };
+    const assistantMessage = { ...newCurrentChat.chatContents[assistantMessageIndex], contents: ct, done: !loading };
 
-    const userMessage: IChatContents = {
-      role: "user",
-      contents: requestPrompt[0],
-      attachedFiles: attachedFilesArr,
-      done: complete,
-    };
-
-    const assistantMessage: IChatContents = {
-      role: "assistant",
-      contents: ct,
-      done: complete,
-    };
-
-    const newChatContents: IChatContents[] = [
-      ...newCurrentChat.chatContents.slice(0, -2),
-      userMessage,
-      assistantMessage,
-    ];
+    const newChatContents = [...newCurrentChat.chatContents];
+    newChatContents.splice(userMessageIndex, 1, userMessage);
+    newChatContents.splice(assistantMessageIndex, 1, assistantMessage);
 
     const newChatArr = arr.map((chat) =>
       chat.chatId === currentChatId
@@ -143,7 +91,6 @@ export const useResponseChat = () => {
     return [...newChatArr];
   };
 
-
   const handleNewChatName = (arr: IChatArray[], ct: string, idx: number) => {
     const newChatArr = arr.map((chat, index) =>
       index === idx ? { ...chat, chatName: removeTrailingNewlines(ct) } : chat
@@ -154,134 +101,162 @@ export const useResponseChat = () => {
     return newChatArr;
   };
 
-  const handleRequest = async (arr: IChatArray[]) => {
-    let ctStr = "";
-    let token = 0;
-    let newChatArr: IChatArray[] = [];
-    const imageArr: IChatContentsType = [];
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? "";
+  // 채팅 이름을 자동으로 설정하는 함수
+  const updateChatNameIfNeeded = async (arr: IChatArray[], chatId: number, assistantResponse: string) => {
+    const chatIndex = arr.findIndex(chat => chat.chatId === chatId);
+    if (chatIndex !== -1) {
+      const chat = arr[chatIndex];
+      // 채팅 이름이 기본 이름인 경우에만 업데이트
+      if (chat.chatName === '새로운 채팅이 시작되었습니다.' || chat.chatName === '새로운 채팅') {
 
-    const chatConfig: any = {
-      model: modelName,
-      safetySettings,
-    };
-    const chatConfig2: any = {
-      model: modelName,
-      systemInstruction:
-        "너는 이제부터 대화의 내용을 보고 대화의 주제를 종결어미를 제외하고 말해야 돼.",
-    };
+        const completedAssistantMessages = chat.chatContents.filter(content => content.role === 'assistant' && content.done && content.contents !== "").length;
 
-    const gemini = new GoogleGenerativeAI(apiKey);
-    const model = gemini.getGenerativeModel(chatConfig);
-    const model2 = gemini.getGenerativeModel(chatConfig2);
+        // 두 번째 AI 응답까지 완료되었을 때 제목 생성 (즉, 사용자 메시지 2개, AI 응답 2개 이상 완료)
+        if (completedAssistantMessages >= 2) {
+          try {
+            // OpenRouter API를 사용하여 채팅 제목 생성
+            const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY ?? "";
+            const newChatName = await generateChatTitle(chat.chatContents, apiKey, modelName);
 
-    try {
-      const newCurrentChat: IChatArray = getCurrentChat(arr);
-      const body = transformContetnsArr(newCurrentChat.chatContents);
+            handleNewChatName(arr, newChatName, chatIndex);
+          } catch (error) {
+            // API 호출 실패 시 기존 로직 사용
+            const newChatName = assistantResponse.trim().substring(0, 15);
+            const fallbackChatName = assistantResponse.trim().length <= 15
+              ? newChatName
+              : `${newChatName}...`;
 
-      const chat = model.startChat(body);
-
-      const requestPromptBody: any[] = Array.isArray(requestPrompt)
-        ? requestPrompt.map((i: any) => (i?.body ? i.body : i))
-        : [];
-
-      const result = await chat.sendMessageStream(requestPromptBody);
-
-      for await (const chunk of result.stream) {
-        if (stopStreamRef.current) break;
-
-        token = chunk.usageMetadata?.candidatesTokenCount ?? 0;
-        const candidates = chunk.candidates || [];
-
-        for (const candidate of candidates) {
-          const parts = candidate.content?.parts || [];
-
-          for (const part of parts) {
-            if (stopStreamRef.current) break;
-
-            if (part.text) {
-              const msgToken = String(part.text);
-              const msgSlice = Math.floor(msgToken.length / msgSliceNum) > 0 ? Math.floor(msgToken.length / msgSliceNum) : 1;
-
-              for (let i = 0; i < msgToken.length; i += msgSlice) {
-                const char = msgToken.slice(i, i + msgSlice);
-                ctStr += char;
-                handleNewChatArr(arr, ctStr, false);
-                // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
-                await new Promise(resolve => setTimeout(resolve, 1));
-              }
-            }
-
-            if (part.inlineData && part.inlineData.mimeType.startsWith("image/")) {
-              const base64Image = part.inlineData.data;
-              const mime = part.inlineData.mimeType;
-              const imageUrl = `data:${mime};base64,${base64Image}`;
-              imageArr.push({ mimeType: part.inlineData.mimeType, data: imageUrl });
-            }
+            handleNewChatName(arr, fallbackChatName, chatIndex);
           }
         }
-
-        const finalContent =
-          imageArr.length > 0 ? [ctStr, ...imageArr] : ctStr;
-
-        handleNewChatArr(arr, finalContent, false);
-        // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
-        await new Promise((resolve) => setTimeout(resolve, 1));
       }
-
-      if (!stopStreamRef.current) {
-        const finalContent =
-          imageArr.length > 0 ? [ctStr, ...imageArr] : ctStr;
-
-        newChatArr = handleNewChatArr(arr, finalContent, true);
-      }
-
-      serverLog(token);
-      usingToken(modelName, token);
-    } catch (error: any) {
-      console.log(error);
-      serverLog(error.response?.usageMetadata?.candidatesTokenCount ?? 0, true);
-      handleNewChatArr(arr, "*해당 질문에 답변할 수 없습니다.*", true);
-    } finally {
-      setIsResponsing(false);
-      stopStreamRef.current = false;
-    }
-
-    try {
-      const current = getCurrentChat(newChatArr);
-      if (
-        current.chatContents[3]?.contents &&
-        current.chatName === "새로운 채팅이 시작되었습니다."
-      ) {
-        const idx = newChatArr.findIndex(
-          (i: IChatArray) => i.chatId === currentChatId
-        );
-
-        const prompt = current.chatContents
-          .map((i: any) =>
-            `${i.role}:${typeof i.contents === "string" ? i.contents : "[이미지]"
-            }\n`
-          )
-          .join("");
-
-        const result = await model2.generateContentStream([prompt]);
-
-        let chatName = "";
-        for await (const chunk of result.stream) {
-          chatName += chunk.text();
-          handleNewChatName(newChatArr, chatName, idx);
-        }
-
-        newChatArr = handleNewChatName(newChatArr, chatName, idx);
-      }
-    } catch {
-      const idx = newChatArr.findIndex(
-        (i: IChatArray) => i.chatId === currentChatId
-      );
-      handleNewChatName(newChatArr, "새로운 채팅이 시작되었습니다.", idx);
     }
   };
 
+  const handleRequest = async (arr: IChatArray[]) => {
+    let ctStr = "";
+    // OpenRouter API 키 사용
+    const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY ?? "";
+
+    try {
+      const newCurrentChat: IChatArray = getCurrentChat(arr);
+
+      // OpenRouter API 호출을 위해 채팅 내역을 그대로 사용
+      const chatHistory = newCurrentChat.chatContents;
+
+      // OpenRouter 스트리밍 호출
+      await sendMessageStream(
+        chatHistory,
+        apiKey,
+        modelName,
+        (chunk: string) => {
+          // 청크 데이터를 처리하여 UI 업데이트
+          ctStr += chunk;
+
+          // UI 업데이트를 위해 handleNewChatArr 호출
+          handleNewChatArr(arr, ctStr, true);
+        },
+        (_fullResponse: string) => {
+          // 완료 시 처리
+
+        }
+      );
+
+      // 응답 완료 후 처리
+      const updatedArr = handleNewChatArr(arr, ctStr, false);
+
+      // 채팅 이름 자동 설정 - 현재 채팅의 이름이 기본 이름인 경우에만 업데이트
+      updateChatNameIfNeeded(updatedArr, currentChatId, ctStr).catch(_error => {
+      });
+    } catch (error: any) {
+      // 오류 발생 시 채팅에 오류 메시지 추가
+      const newCurrentChat: IChatArray = getCurrentChat(arr);
+      const userMessageIndex = newCurrentChat.chatContents.length - 2;
+      const assistantMessageIndex = newCurrentChat.chatContents.length - 1;
+
+      const textContent = typeof requestPrompt[0] === 'string' ? requestPrompt[0] : '';
+      const attachedFiles = requestPrompt.filter((item: any) => typeof item !== 'string');
+      const userMessage = { ...newCurrentChat.chatContents[userMessageIndex], contents: textContent, attachedFiles };
+      const errorMessage: IChatContents = {
+        role: 'assistant',
+        contents: "죄송합니다. 응답을 생성하는 중 오류가 발생했습니다.",
+        done: true
+      };
+
+      const newChatContents = [...newCurrentChat.chatContents];
+      newChatContents.splice(userMessageIndex, 1, userMessage);
+      newChatContents.splice(assistantMessageIndex, 1, errorMessage);
+
+      const newChatArr = arr.map((chat) =>
+        chat.chatId === currentChatId
+          ? { ...chat, chatContents: newChatContents, chatDate: new Date() }
+          : chat
+      );
+
+      setChatArr(newChatArr);
+      saveChatFull(newChatArr);
+
+      // 오류 발생 시에도 채팅 이름 자동 설정 시도
+      updateChatNameIfNeeded(newChatArr, currentChatId, "죄송합니다. 응답을 생성하는 중 오류가 발생했습니다.");
+    } finally {
+      // 응답 완료 상태로 변경
+      setIsResponsing(false);
+    }
+  };
+
+  const handleNewChat = (arr: IChatArray[]) => {
+    const newChatArr = [
+      ...arr,
+      {
+        chatId: arr.length > 0 ? Math.max(...arr.map((i) => i.chatId)) + 1 : 0,
+        chatName: "새로운 채팅",
+        chatContents: [],
+        chatDate: new Date(),
+      },
+    ];
+
+    setChatArr(newChatArr);
+    saveChatFull(newChatArr);
+
+    return newChatArr;
+  };
+
+  const addUserMessage = () => {
+    const newChatArr = [...chatArr];
+    const currentChatIdx = newChatArr.findIndex((i) => i.chatId === currentChatId);
+
+    if (currentChatIdx < 0) {
+      const tempArr = handleNewChat(newChatArr);
+      const newCurrentChatIdx = tempArr.findIndex((i) => i.chatId === currentChatId);
+
+      const textContent = typeof requestPrompt[0] === 'string' ? requestPrompt[0] : '';
+      const attachedFiles = requestPrompt.filter((item: any) => typeof item !== 'string');
+      tempArr[newCurrentChatIdx].chatContents = [
+        ...tempArr[newCurrentChatIdx].chatContents,
+        { role: "user", contents: textContent, attachedFiles, done: true },
+        { role: "assistant", contents: "", done: false },
+      ];
+
+      setChatArr(tempArr);
+      saveChatFull(tempArr);
+      handleRequest(tempArr);
+    } else {
+      const textContent = typeof requestPrompt[0] === 'string' ? requestPrompt[0] : '';
+      const attachedFiles = requestPrompt.filter((item: any) => typeof item !== 'string');
+      newChatArr[currentChatIdx] = {
+        ...newChatArr[currentChatIdx],
+        chatContents: [
+          ...newChatArr[currentChatIdx].chatContents,
+          { role: "user", contents: textContent, attachedFiles, done: true },
+          { role: "assistant", contents: "", done: false },
+        ],
+      };
+
+      setChatArr(newChatArr);
+      saveChatFull(newChatArr);
+      handleRequest(newChatArr);
+    }
+  };
 
   const handleContentsDone = () => {
     const tempArr: IChatArray[] = chatArr.map((chat: IChatArray) => ({

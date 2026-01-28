@@ -54,7 +54,7 @@ const BoardBlog = (): JSX.Element => {
 
   return (
     <Container className={className}>
-      <PostList data={data} isLoading={isLoading} isError={isError} page={page} limit={limit} total={total} onSortChange={handleSortChange}>
+      <PostList data={data} isLoading={isLoading} isError={isError} total={total} onSortChange={handleSortChange}>
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </PostList>
       <TagList tags={data?.tags} posts={data?.posts} />

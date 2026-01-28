@@ -26,6 +26,7 @@ html[data-theme="dark"] {
   display: flex;
   flex-direction: column;
   gap: 0em;
+  margin-bottom: 0.5rem;
   font-size: 1em;
   font-weight: 450;
   line-height: 1.9;
@@ -40,6 +41,15 @@ html[data-theme="dark"] {
 
   em {
     font-style: italic;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   h1,
@@ -137,6 +147,9 @@ html[data-theme="dark"] {
   }
 
   table {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+
     border-spacing: 0;
     border-collapse: separate;
     border: 1px solid var(--bg-chat-table-border);

@@ -101,10 +101,19 @@ export const saveChatFull = (contents: IChatArray[]) => {
 
   contentsTemp = contentsTemp.map((i: IChatArray) => {
     const chatContents = i.chatContents.map((j: IChatContents) => {
+      // attachedFiles가 존재하면, 각 파일의 uri가 data:image로 시작하는지 확인하고 필요한 경우 처리
       const attachedFiles = j.attachedFiles?.map((k: IChatAttacedFile) => {
-        return k.uri.split('/')[0] !== 'data:image'
-          ? { ...k, uri: `${k.uri.split(',')[0]},` }
-          : k;
+        // data URI 형식인지 확인
+        if (k.uri.startsWith('data:')) {
+          // data:image로 시작하는 경우 그대로 반환
+          if (k.uri.startsWith('data:image')) {
+            return k;
+          }
+          // 다른 data URI인 경우 필요한 처리
+          return { ...k, uri: `${k.uri.split(',')[0]},` };
+        }
+        // data URI가 아닌 경우 그대로 반환
+        return k;
       }) ?? j.attachedFiles;
 
       return { ...j, attachedFiles };

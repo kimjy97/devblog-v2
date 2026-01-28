@@ -1,6 +1,6 @@
 import Post from "@/models/Post";
 import dbConnect from "@/lib/mongodb";
-import { ResponseError, ResponseSuccess } from "@/constants/api";
+import { ResponseError } from "@/constants/api";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

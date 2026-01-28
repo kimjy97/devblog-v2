@@ -8,8 +8,6 @@ import PostTitle from '@/containers/PostMarkDown/PostTitle';
 import { useLayout } from '@/hooks/useLayout';
 import { usePostInfoQuery } from '@/hooks/usePostInfoQuery';
 import { Pretendard } from '@public/fonts';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 interface Props {

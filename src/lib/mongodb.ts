@@ -37,11 +37,9 @@ async function dbConnect(): Promise<typeof mongoose> {
     cached.promise = mongoose
       .connect(MONGODB_URI, options)
       .then((connection) => {
-        console.log('New MongoDB connection established');
         return connection;
       })
       .catch((error) => {
-        console.error('MongoDB connection error:', error);
         cached.promise = null;
         throw error;
       });

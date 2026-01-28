@@ -16,7 +16,6 @@ import { useRecoilValue } from "recoil";
 import { currentChatIdState } from "@/atoms/chatAI";
 import LoadingMessage from "@/containers/AIChatFull/Contents/LoadingMessage";
 import { apiPost } from "@/services/api";
-import { IChatContentsType } from "@/types/chat";
 
 const Message = ({ data }: any) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -27,9 +26,22 @@ const Message = ({ data }: any) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isCopy, setIsCopy] = useState<boolean>(false);
   const { addToast } = useToast();
-  const attached = data.attachedFiles;
-  const type = (idx: number) =>
-    attached?.length > 0 && getFileTypeFromBase64(attached[idx].uri).split('/')[0];
+  const attached = Array.isArray(data.attachedFiles) ? data.attachedFiles : []; // attachedFiles가 배열이 아닐 경우 빈 배열로 초기화
+  const type = (idx: number) => {
+    if (!attached || attached.length <= idx || !attached[idx]?.uri) {
+      return '';
+    }
+    try {
+      return getFileTypeFromBase64(attached[idx].uri).split('/')[0];
+    } catch {
+      // base64 URI가 유효하지 않은 경우, 일반적인 파일 확장자 추출 방식 사용
+      const mimeType = attached[idx].uri.split(';')[0].split(':')[1];
+      if (mimeType) {
+        return mimeType.split('/')[0];
+      }
+      return '';
+    }
+  };
 
   const handleClickAudio = async (text: string) => {
     if (!audioUrl) {
@@ -89,17 +101,17 @@ const Message = ({ data }: any) => {
           <ProfileIcon />
         </ProfileImg>
         <UserMessageContents>
-          {attached.length > 0 ?
+          {attached.length > 0 ? // 이제 attached가 항상 배열이므로 안전함
             attached.length === 1 ?
               <AttachedFilePreview className={`single ${type(0) !== 'image' ? 'file' : ''}`}>
-                {type(0) !== 'image' ?
+                {type(0) && type(0) !== 'image' ?
                   <FileContainer>
                     <FileWrapper>
                       <FileIconWrapper>
-                        {type(0) === 'audio' &&
+                        {type(0) && type(0) === 'audio' &&
                           <AudioIcon />
                         }
-                        {type(0) === 'video' &&
+                        {type(0) && type(0) === 'video' &&
                           <VideoIcon />
                         }
                       </FileIconWrapper>
@@ -122,12 +134,12 @@ const Message = ({ data }: any) => {
                 {attached.map((i: any, idx: number) =>
                   <FileContainer key={idx}>
                     <FileWrapper>
-                      {type(idx) !== 'image' ?
+                      {type(idx) && type(idx) !== 'image' ?
                         <FileIconWrapper>
-                          {type(idx) === 'audio' &&
+                          {type(idx) && type(idx) === 'audio' &&
                             <AudioIcon />
                           }
-                          {type(idx) === 'video' &&
+                          {type(idx) && type(idx) === 'video' &&
                             <VideoIcon />
                           }
                         </FileIconWrapper>
@@ -160,29 +172,42 @@ const Message = ({ data }: any) => {
           <AIIcon />
         </ProfileImg>
         <MessageContents>
-          {Array.isArray(data.contents) ? (
-            data.contents.map((item: { mimeType: string, data: string }, idx: number) =>
-              typeof item === 'string' ? (
-                <MarkdownViewer key={idx} text={item} />
-              ) : item.data ? (
-                <ImageWrapper key={idx}>
-                  <Image
-                    src={item.data}
-                    alt={`generated-img-${idx}`}
-                    fill
-                    objectFit="contain"
-                  />
-                </ImageWrapper>
-              ) : null
-            )
-          ) : (
+          {/* OpenRouter에서 수신한 데이터를 적절히 처리 */}
+          {typeof data.contents === 'string' ? (
             <MarkdownViewer text={data.contents} />
+          ) : Array.isArray(data.contents) ? (
+            data.contents.map((item: any, idx: number) => {
+              // item이 문자열인지 확인
+              if (typeof item === 'string') {
+                return <MarkdownViewer key={idx} text={item} />;
+              }
+
+              // item이 이미지 데이터인지 확인
+              if (item && (item.mimeType || item.data || item.type === 'image_url' || item.image_url)) {
+                const imageUrl = item.data || item.image_url || (item.inlineData ? `data:${item.inlineData.mimeType};base64,${item.inlineData.data}` : null);
+                return imageUrl ? (
+                  <ImageWrapper key={idx}>
+                    <Image
+                      src={imageUrl}
+                      alt={`generated-img-${idx}`}
+                      fill
+                      objectFit="contain"
+                    />
+                  </ImageWrapper>
+                ) : null;
+              }
+
+              // 그 외의 경우는 문자열로 처리
+              return <MarkdownViewer key={idx} text={JSON.stringify(item)} />;
+            })
+          ) : (
+            <MarkdownViewer text={JSON.stringify(data.contents)} />
           )}
           <OptionWrapper className={data.done && data.contents ? '' : 'invisible'}>
             <Result className={data.contents.slice(-14) === '...***(중단됨)***' ? 'stop' : ''}>{data.contents.slice(-14) === '...***(중단됨)***' ? 'ERROR' : 'DONE'}</Result>
             {audioUrl && <audio ref={audioRef} src={audioUrl} onEnded={handleAudioEnd} />}
             <Tooltip ct={isPlaying ? '정지' : '재생'} delay={250}>
-              <AudioPlayer onClick={() => handleClickAudio(data.contents)}>
+              <AudioPlayer onClick={() => handleClickAudio(typeof data.contents === 'string' ? data.contents : JSON.stringify(data.contents))}>
                 <Icon>
                   {isAudioLoading ?
                     <LoadingCircle /> : isPlaying ?
@@ -192,7 +217,7 @@ const Message = ({ data }: any) => {
               </AudioPlayer>
             </Tooltip>
             <Tooltip ct='복사' delay={250}>
-              <CopyBtn onClick={() => handleCopyToClipboard(data.contents)}>
+              <CopyBtn onClick={() => handleCopyToClipboard(typeof data.contents === 'string' ? data.contents : JSON.stringify(data.contents))}>
                 <Icon>
                   <Clipborad>
                     <LottieBox
@@ -364,10 +389,6 @@ const MessageAssistant = styled.div`
 
   animation: 300ms 300ms slideUpAni forwards;
 
-  &:last-child {
-    padding-bottom: 32px;
-  }
-
   @keyframes slideUpAni {
     100% {
       transform: translateY(0px);
@@ -479,7 +500,6 @@ const VideoIcon = styled(IconVideo)`
 const OptionWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding-top: 1.25rem;
   gap: 1.125em;
 
   opacity: 1;
@@ -618,33 +638,7 @@ const Clipborad = styled.div`
 
   filter: var(--filter-invert-reverse);
 `
-const MessageLoading = styled.div`
-  display: flex;
-  align-items: center;
-  height: 1.5em;
-  padding-left: 0.375em;
-  div {
-    width: 1.875em;
-    aspect-ratio: 6;
-    
-    --_g: no-repeat radial-gradient(circle closest-side, var(--text-normal) 100%, #0000);
-    background: 
-      var(--_g) 0%   50%,
-      var(--_g) 50%  50%,
-      var(--_g) 100% 50%;
-    background-size: calc(100%/3) 100%;
-    opacity: 0.25;
 
-    animation: l7 1s infinite linear;
-
-    @keyframes l7 {
-        33%{background-size:calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%}
-        50%{background-size:calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%}
-        66%{background-size:calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%  }
-    }
-  }
-  
-`
 const Result = styled.div`
   color: var(--text-sub-light);
   font-size: 0.75rem;

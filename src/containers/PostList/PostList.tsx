@@ -19,13 +19,11 @@ interface PostListProps {
   isLoading: boolean;
   isError: boolean;
   children?: React.ReactNode;
-  page?: number;
-  limit?: number;
   total?: number;
   onSortChange?: (sortType: string) => void;
 }
 
-const PostList = ({ data, isLoading, isError, children, page = 1, limit = 10, total = 0, onSortChange }: PostListProps): JSX.Element => {
+const PostList = ({ data, isLoading, isError, children, total = 0, onSortChange }: PostListProps): JSX.Element => {
   const searchParams = useSearchParams();
   const board = searchParams.get('board');
   const search = searchParams.get('search');

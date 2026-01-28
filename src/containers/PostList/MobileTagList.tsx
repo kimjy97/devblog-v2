@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 
 interface MobileTagListProps {

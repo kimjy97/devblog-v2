@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import IconSharp from '@public/svgs/sharp.svg';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 
 interface TagListProps {

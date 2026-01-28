@@ -22,7 +22,7 @@ export default LoadingMessage;
 
 const Container = styled.div`
   position: absolute;
-  bottom: 2.9375em;
+  bottom: 4.2rem;
   display: flex;
   align-items: center;
   opacity: 0;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { Pretendard } from '../../../public/fonts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PostInfo } from '@type/post';
-import { apiPost } from '@services/api';
+
 import Post from '@/components/Post';
 import Selection from '@containers/Selection';
 import IconArrowRight from '@public/svgs/arrow_right.svg'

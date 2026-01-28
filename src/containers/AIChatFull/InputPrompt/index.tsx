@@ -133,19 +133,11 @@ const InputPrompt = (): JSX.Element => {
           reader.onload = async () => {
             if (typeof reader.result === 'string') {
               const resized = file.type.split('/')[0] === 'image' ? await resizeImage(reader.result) : '';
-              const obj = {
-                origin: {
-                  uri: file.type.split('/')[0] === 'image' ? resized : reader.result,
-                  name: file.name,
-                },
-                body: {
-                  inlineData: {
-                    data: file.type.split('/')[0] === 'image' ? resized.split(',')[1] : reader.result.split(',')[1],
-                    mimeType: file.type,
-                  },
-                },
+              const fileObj = {
+                uri: file.type.split('/')[0] === 'image' ? resized : reader.result,
+                name: file.name,
               };
-              mediaParts = [...mediaParts, obj];
+              mediaParts = [...mediaParts, fileObj];
               resolve();
             }
           };
