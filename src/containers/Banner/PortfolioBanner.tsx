@@ -35,7 +35,7 @@ const PortfolioBanner = () => {
       <ContentsWrapper>
         <Title>
           <p id='head'>PORTFOLIO</p>
-          <p id='sub'>Front-end Develeoper</p>
+          <p id='sub'>Web Developer</p>
         </Title>
       </ContentsWrapper>
     </Container>

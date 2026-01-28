@@ -11,7 +11,7 @@ const Profile = (): JSX.Element => {
       </ProfileImageWrapper>
       <InfoWrapper className={Myriad.className}>
         <Name>JongYeon</Name>
-        <Job>Front-end dev.</Job>
+        <Job>Web Developer</Job>
         <Mention className={Pretendard.className}>😎 저의 블로그를 방문해주셔서 감사합니다!!</Mention>
       </InfoWrapper>
     </Container>
