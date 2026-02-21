@@ -173,9 +173,9 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ chartRef, chartType, da
 
   return chartType === '바 그래프'
     ?
-    <Bar ref={chartRef} data={data} options={options} />
+    <Bar ref={chartRef} data={data} options={options as ChartOptions<'bar'>} />
     :
-    <Line ref={chartRef} data={data} options={options} />;
+    <Line ref={chartRef} data={data} options={options as ChartOptions<'line'>} />;
 };
 
 export default ChartComponent;
